@@ -1,0 +1,361 @@
+/* ============================================
+   DESIGN TOKENS — Brynäs Bilservice
+   Extracted from logo + mockup + brand images
+============================================ */
+:root {
+  /* Colors — Brynäs IF: Svart + Guld/Gul + Röd + Vit */
+  --color-black:        #080808;
+  --color-dark:         #111111;
+  --color-dark-2:       #181818;
+  --color-dark-3:       #222222;
+  --color-gold:         #F0B800;   /* Klarare, mer vibrant gul */
+  --color-gold-light:   #FFD000;   /* Ren gul — Brynäs IF yellow */
+  --color-gold-dark:    #C09400;
+  --color-red:          #CC1417;   /* Brynäs IF röd */
+  --color-red-dark:     #A00F12;
+  --color-red-light:    #E8191C;
+  --color-white:        #FFFFFF;
+  --color-grey-light:   #f4f4f4;
+  --color-grey:         #888888;
+  --color-grey-dark:    #444444;
+  --color-text-muted:   #aaaaaa;
+
+  /* Typography */
+  --font-heading: 'Exo 2', sans-serif;
+  --font-body:    'Barlow', sans-serif;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  /* Shadows */
+  --shadow-gold: 0 0 30px rgba(212,160,23,0.3);
+  --shadow-dark: 0 8px 40px rgba(0,0,0,0.6);
+
+  /* Container */
+  --container-max: 1200px;
+  --container-pad: clamp(1rem, 5vw, 3rem);
+
+  /* Transitions */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur-normal: 300ms;
+}
+
+/* Real logo image */
+.logo__img {
+  height: 72px;
+  width: auto;
+  display: block;
+}
+/* Footer round logo is square, treat differently */
+.site-footer .logo__img {
+  height: 64px;
+  width: 64px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* ============================================
+   RESET & BASE
+============================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-black);
+  color: var(--color-white);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img { display: block; max-width: 100%; }
+
+/* Offset for fixed header when scrolling to anchor */
+section[id] {
+  scroll-margin-top: 90px;
+}
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+/* ============================================
+   UTILITY
+============================================ */
+.gold { color: var(--color-gold); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
+/* ============================================
+   BUTTONS
+============================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.85em 2.2em;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--dur-normal) var(--ease);
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--color-gold);
+  color: var(--color-black);
+  border-color: var(--color-gold);
+}
+.btn--primary:hover {
+  background: var(--color-gold-light);
+  border-color: var(--color-gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(240,184,0,0.5);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--color-white);
+  border-color: rgba(255,255,255,0.4);
+}
+.btn--outline:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  transform: translateY(-2px);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-gold);
+  border-color: var(--color-gold);
+}
+.btn--ghost:hover {
+  background: var(--color-gold);
+  color: var(--color-black);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   HEADER / NAV
+============================================ */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: #080808;
+  border-bottom: 2px solid var(--color-red);
+  transition: box-shadow var(--dur-normal) var(--ease);
+}
+
+.site-header.scrolled {
+  background: #080808;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.9);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-4);
+  gap: var(--space-4);
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.logo__icon {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+
+/* SVG gear + car logo recreation */
+.logo__icon svg { width: 100%; height: 100%; }
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo__brand {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
+  color: var(--color-white);
+}
+
+.logo__sub {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
+  text-transform: uppercase;
+}
+
+/* Nav links */
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.nav__links a {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #cccccc;
+  transition: color var(--dur-fast) var(--ease);
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, var(--color-red), var(--color-gold));
+  transition: width var(--dur-normal) var(--ease);
+  border-radius: 2px;
+}
+
+.nav__links a:hover {
+  color: var(--color-white);
+}
+.nav__links a:hover::after { width: 100%; }
+
+/* Header CTA */
+.header-cta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.header-phone {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  color: var(--color-gold);
+  transition: color var(--dur-fast) var(--ease);
+}
+.header-phone:hover { color: var(--color-gold-light); }
+.header-phone svg { width: 16px; height: 16px; }
+
+/* Hamburger */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 10px 12px;
+}
+.nav-toggle span {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: var(--color-white);
+  transition: all var(--dur-normal) var(--ease);
+  transform-origin: center;
+  border-radius: 2px;
+}
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile nav */
+.mobile-nav {
+  display: none;
+  background: var(--color-dark);
+  border-top: 1px solid var(--color-dark-3);
+}
+.mobile-nav.open { display: block; }
+.mobile-nav ul {
+  padding: var(--space-4) 0;
+}
+.mobile-nav li a {
+  display: block;
+  padding: var(--space-4) var(--container-pad);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #cccccc;
+  border-left: 3px solid transparent;
+  transition: color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.mobile-nav li a:hover {
+  color: var(--color-gold);
+  background: rgba(240,184,0,0.05);
+  border-left-color: var(--color-gold);
+}
+.mobile-nav .mobile-cta {
+  padding: var(--space-4) var(--container-pad);
+  border-top: 1px solid var(--color-dark-3);
+}
+
+/* ============================================
+   HERO
+============================================ */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Workshop background image */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-black);
+}
