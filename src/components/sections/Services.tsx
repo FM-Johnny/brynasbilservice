@@ -38,14 +38,12 @@ const cards = [
     img: trailerWinter,
     alt: 'Husvagn och fordon till salu',
     w: 900, h: 600,
-    icon: <><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="19" r="1" fill="var(--color-red)"/><circle cx="20" cy="19" r="1" fill="var(--color-red)"/></>,
-    iconStyle: { borderColor: 'rgba(204,20,23,0.4)', background: 'rgba(204,20,23,0.08)' } as React.CSSProperties,
-    iconStroke: 'var(--color-red)',
+    icon: <><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="19" r="1" fill="currentColor"/><circle cx="20" cy="19" r="1" fill="currentColor"/></>,
     title: 'Bilar till salu',
     desc: 'Vi säljer kvalitetskontrollerade begagnade bilar. Varje bil har gåtts igenom av våra mekaniker — du vet vad du köper.',
     linkText: 'Se våra bilar',
     linkHref: '#kontakt',
-    linkStyle: { color: 'var(--color-red-light)' } as React.CSSProperties,
+    isRedVariant: true,
   },
 ]
 
@@ -64,12 +62,12 @@ export function Services() {
             <article className="service-card fade-up" key={c.title}>
               <img src={c.img} alt={c.alt} width={c.w} height={c.h} loading="lazy" className="service-card__image" />
               <div className="service-card__body">
-                <div className="service-card__icon" style={c.iconStyle}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke={c.iconStroke || 'currentColor'} strokeWidth="2" aria-hidden="true">{c.icon}</svg>
+                <div className={`service-card__icon${c.isRedVariant ? ' border-[rgba(204,20,23,0.4)] bg-[rgba(204,20,23,0.08)] text-(--color-red)' : ''}`}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">{c.icon}</svg>
                 </div>
                 <h3 className="service-card__title">{c.title}</h3>
                 <p className="service-card__desc">{c.desc}</p>
-                <a href={c.linkHref} className="service-card__link" style={c.linkStyle}>
+                <a href={c.linkHref} className={`service-card__link${c.isRedVariant ? ' text-(--color-red-light)!' : ''}`}>
                   {c.linkText}{' '}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>

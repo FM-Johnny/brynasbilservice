@@ -14,10 +14,10 @@ const items = [
   { name: 'Batteribyte & kontroll' },
   { name: 'Dragkroksmontage' },
   { name: 'Däckhotell — förvaring' },
-  { name: 'Elbilsservice — alla märken', dotColor: 'var(--color-gold)' },
-  { name: 'Högvoltssystem & diagnostik', dotColor: 'var(--color-gold)' },
+  { name: 'Elbilsservice — alla märken', isGoldDot: true },
+  { name: 'Högvoltssystem & diagnostik', isGoldDot: true },
   { name: 'Växellådsreparationer' },
-  { name: 'Bilar till salu — begagnat', dotColor: 'var(--color-red)', borderColor: 'rgba(204,20,23,0.2)' },
+  { name: 'Bilar till salu — begagnat', isRedVariant: true },
 ]
 
 export function ServiceList() {
@@ -31,13 +31,11 @@ export function ServiceList() {
         <div className="service-list-grid">
           {items.map(item => (
             <div
-              className="service-item fade-up"
+              className={`service-item fade-up${item.isRedVariant ? ' border-[rgba(204,20,23,0.2)]' : ''}`}
               key={item.name}
-              style={item.borderColor ? { borderColor: item.borderColor } : undefined}
             >
               <div
-                className="service-item__dot"
-                style={item.dotColor ? { background: item.dotColor } : undefined}
+                className={`service-item__dot${item.isRedVariant ? ' bg-(--color-red)' : item.isGoldDot ? ' bg-(--color-gold)' : ''}`}
               />
               <span className="service-item__name">{item.name}</span>
             </div>

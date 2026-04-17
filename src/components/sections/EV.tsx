@@ -21,17 +21,17 @@ export function EV() {
       <div className="container">
         <div className="ev-inner">
           <div className="ev-text">
-            <div className="section-eyebrow" style={{ justifyContent: 'flex-start' }}>
-              <span style={{ display: 'block', width: 24, height: 1, background: 'linear-gradient(90deg,var(--color-red),var(--color-gold))' }} />
+            <div className="section-eyebrow justify-start">
+              <span className="block h-px w-6 bg-linear-to-r from-(--color-red) to-(--color-gold)" />
               Framtidens bilar
-              <span style={{ display: 'block', width: 24, height: 1, background: 'linear-gradient(90deg,var(--color-gold),var(--color-red))' }} />
+              <span className="block h-px w-6 bg-linear-to-r from-(--color-gold) to-(--color-red)" />
             </div>
-            <h2 className="section-title" style={{ textAlign: 'left' }}>Specialister på <span className="title-accent">elbilar</span></h2>
-            <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.8, marginBottom: 'var(--space-6)' }}>
+            <h2 className="section-title text-left">Specialister på <span className="title-accent">elbilar</span></h2>
+            <p className="mb-6 leading-[1.8] text-(--color-text-muted)">
               Vi är en av Gävleborgs få verkstäder med kompetens att serva nya kinesiska elbilsmärken som saknar auktoriserade verkstäder i Sverige. Våra mekaniker är utbildade att hantera högvoltssystem och moderna diagnostiksystem.
             </p>
-            <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.8, marginBottom: 'var(--space-8)' }}>
-              Vi samarbetar med <strong style={{ color: 'var(--color-white)' }}>Däckleader</strong> och <strong style={{ color: 'var(--color-white)' }}>Autobutler</strong> — beställ däck online och välj oss som monteringsstation, eller jämför priser via Autobutler.
+            <p className="mb-8 leading-[1.8] text-(--color-text-muted)">
+              Vi samarbetar med <strong className="text-white">Däckleader</strong> och <strong className="text-white">Autobutler</strong> — beställ däck online och välj oss som monteringsstation, eller jämför priser via Autobutler.
             </p>
             <a href="tel:0705533395" className="btn btn--primary">Ring för offert</a>
           </div>

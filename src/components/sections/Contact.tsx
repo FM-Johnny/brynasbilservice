@@ -44,7 +44,7 @@ export function Contact() {
             <div className="contact-card__content">
               <p>Utmarksvägen 21B</p>
               <p>802 91 Gävle</p>
-              <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: 8 }}>Brynäs industriområde</p>
+              <p className="mt-2 text-[0.85rem] text-(--color-text-muted)">Brynäs industriområde</p>
               <br />
               <a href="https://maps.google.com/?q=Utmarksvägen+21B+Gävle" target="_blank" rel="noopener noreferrer">Öppna i Google Maps →</a>
             </div>
@@ -72,10 +72,10 @@ export function Contact() {
             </div>
             <h3 className="contact-card__title">Ring oss</h3>
             <div className="contact-card__content">
-              <p style={{ marginBottom: 8 }}>Telefon:</p>
-              <p style={{ marginBottom: 16 }}><a href="tel:0705533395" style={{ fontSize: '1.2rem', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>070-553 33 95</a></p>
-              <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: 16 }}>Vi svarar vardagar 08:00–16:00</p>
-              <a href="https://www.facebook.com/p/Bryn%C3%A4s-Bilservice-AB-100076623266130/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-gold)', fontSize: '0.85rem' }}>Följ oss på Facebook →</a>
+              <p className="mb-2">Telefon:</p>
+              <p className="mb-4"><a href="tel:0705533395" className="font-heading text-[1.2rem] font-bold">070-553 33 95</a></p>
+              <p className="mb-4 text-[0.85rem] text-(--color-text-muted)">Vi svarar vardagar 08:00–16:00</p>
+              <a href="https://www.facebook.com/p/Bryn%C3%A4s-Bilservice-AB-100076623266130/" target="_blank" rel="noopener noreferrer" className="text-[0.85rem] text-(--color-gold)">Följ oss på Facebook →</a>
             </div>
           </div>
 

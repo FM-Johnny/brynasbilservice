@@ -66,10 +66,10 @@ export function Header() {
           ))}
         </ul>
         <div className="mobile-cta">
-          <a href="tel:0705533395" className="btn btn--ghost" style={{ width: '100%', justifyContent: 'center', marginBottom: '0.75rem' }}>
+          <a href="tel:0705533395" className="btn btn--ghost mb-3 w-full justify-center">
             Ring oss: 070-553 33 95
           </a>
-          <a href="#kontakt" className="btn btn--primary" style={{ width: '100%', justifyContent: 'center' }} onClick={closeMenu}>
+          <a href="#kontakt" className="btn btn--primary w-full justify-center" onClick={closeMenu}>
             Boka tid
           </a>
         </div>
