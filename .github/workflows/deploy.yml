@@ -65,11 +65,3 @@ jobs:
           ssh deploy-target "mkdir -p \"$DEPLOY_PATH\" && find \"$DEPLOY_PATH\" -mindepth 1 -maxdepth 1 -exec rm -rf {} +"
           tar -C dist -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH\""
 
-      - name: Restart service (optional)
-        if: ${{ secrets.DEPLOY_RESTART_CMD != '' }}
-        env:
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          DEPLOY_RESTART_CMD: ${{ secrets.DEPLOY_RESTART_CMD }}
-        run: |
-          set -e
-          ssh -T deploy-target "cd \"$DEPLOY_PATH\" && bash -lc \"$DEPLOY_RESTART_CMD\""
