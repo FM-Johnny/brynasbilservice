@@ -1,4 +1,7 @@
 import { useEffect, useRef } from 'react'
+import { ClockIcon } from '../icons/ClockIcon'
+import { MapPinIcon } from '../icons/MapPinIcon'
+import { PhoneIcon } from '../icons/PhoneIcon'
 
 const days = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
 const hours = [
@@ -38,7 +41,7 @@ export function Contact() {
 
           <div className="contact-card">
             <div className="contact-card__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <MapPinIcon />
             </div>
             <h3 className="contact-card__title">Hitta oss</h3>
             <div className="contact-card__content">
@@ -52,7 +55,7 @@ export function Contact() {
 
           <div className="contact-card">
             <div className="contact-card__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <ClockIcon />
             </div>
             <h3 className="contact-card__title">Öppettider</h3>
             <div className="contact-card__content">
@@ -68,7 +71,7 @@ export function Contact() {
 
           <div className="contact-card">
             <div className="contact-card__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.5 2 2 0 0 1 3.6 1.36h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.04z"/></svg>
+              <PhoneIcon />
             </div>
             <h3 className="contact-card__title">Ring oss</h3>
             <div className="contact-card__content">

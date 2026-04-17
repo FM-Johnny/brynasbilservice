@@ -1,4 +1,5 @@
 import sakarWorks from '../../assets/images/sakar_works.jpg'
+import { CheckIcon } from '../icons/CheckIcon'
 
 const features = [
   'Märkesoberoende — alla bilmärken',
@@ -30,7 +31,7 @@ export function About() {
             <div className="about__features">
               {features.map(f => (
                 <div className="about__feature" key={f}>
-                  <svg className="about__feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <CheckIcon className="about__feature-icon" />
                   <span className="about__feature-text">{f}</span>
                 </div>
               ))}

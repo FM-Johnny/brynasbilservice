@@ -1,4 +1,5 @@
 import logo2 from '../../assets/images/logo2.jpg'
+import { FacebookIcon } from '../icons/FacebookIcon'
 
 export function Footer() {
   return (
@@ -15,9 +16,7 @@ export function Footer() {
             </p>
             <div className="footer-social">
               <a href="https://www.facebook.com/p/Brynäs-Bilservice-AB-100076623266130/" target="_blank" rel="noopener noreferrer" aria-label="Följ oss på Facebook">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-                </svg>
+                <FacebookIcon />
               </a>
             </div>
           </div>
