@@ -253,7 +253,7 @@ ul { list-style: none; }
   position: absolute;
   inset: 0;
   background-color: var(--color-black);
-  background-image: url('./assets/images/hero_background.jpg');
+  background-image: url('../assets/images/hero_background.jpg');
   background-size: cover;
   background-position: center center;
   z-index: 0;
