@@ -54,7 +54,7 @@ jobs:
       - name: Verify SSH connection
         run: ssh -o BatchMode=yes deploy-target "echo SSH connection successful"
 
-      - name: Deploy dist/ with rsync
+      - name: Deploy dist/ over SSH
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
@@ -62,7 +62,8 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           set -e
-          rsync -az --delete dist/ "deploy-target:$DEPLOY_PATH/"
+          ssh deploy-target "mkdir -p \"$DEPLOY_PATH\" && find \"$DEPLOY_PATH\" -mindepth 1 -maxdepth 1 -exec rm -rf {} +"
+          tar -C dist -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH\""
 
       - name: Restart server
         env:
