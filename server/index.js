@@ -2,9 +2,10 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const mysql = require('mysql2');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const { format } = require('date-fns');
 
 // Middleware
@@ -12,6 +13,9 @@ app.use(express.json());
 
 // Enable CORS
 app.use(cors());
+
+// Serve static files from the public folder (client build)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // MySQL Connection
 const db = mysql.createConnection({
@@ -105,6 +109,11 @@ app.post('/api/bookings', (req, res) => {
       }
     });
   }
+});
+
+// Catch-all route - serve React app for client-side routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Start Server

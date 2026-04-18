@@ -32,19 +32,12 @@ jobs:
         working-directory: client
         run: npm run build
 
-      # Step 5: Deploy the client
-      - name: Deploy client
-        working-directory: client
-        run: |
-          # Replace the following command with your actual deployment command for the client
-          echo "Deploying client to frontend hosting service..."
-
-      # Step 6: Install dependencies for the server
+      # Step 5: Install dependencies for the server
       - name: Install server dependencies
         working-directory: server
         run: npm install
 
-      # Step 7: Prepare SSH for server deployment
+      # Step 6: Prepare SSH for server deployment
       - name: Prepare SSH
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
@@ -70,12 +63,12 @@ jobs:
           EOF
           chmod 600 ~/.ssh/config
 
-      # Step 8: Verify SSH connection
+      # Step 7: Verify SSH connection
       - name: Verify SSH connection
         run: ssh -o BatchMode=yes deploy-target "echo SSH connection successful"
 
-      # Step 9: Deploy server
-      - name: Deploy server
+      # Step 8: Deploy server and client
+      - name: Deploy server and client
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
@@ -83,5 +76,15 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           set -e
+          # Clean and prepare deployment directory
           ssh deploy-target "mkdir -p \"$DEPLOY_PATH\" && find \"$DEPLOY_PATH\" -mindepth 1 -maxdepth 1 -exec rm -rf {} +"
+          
+          # Deploy server files
           tar -C server -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH\""
+          
+          # Deploy client build (dist folder) to public directory on server
+          ssh deploy-target "mkdir -p \"$DEPLOY_PATH/public\""
+          tar -C client/dist -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH/public\""
+          
+          # Restart server (using pm2 or similar)
+          ssh deploy-target "cd \"$DEPLOY_PATH\" && npm install --production && (pm2 restart brynasbilservice 2>/dev/null || pm2 start index.js --name brynasbilservice)"
