@@ -1,5 +1,6 @@
 import sakarWorks from '../../assets/images/sakar_works.jpg'
 import { CheckIcon } from '../icons/CheckIcon'
+import { SectionHeader } from '../ui/SectionHeader'
 
 const features = [
   'Märkesoberoende — alla bilmärken',
@@ -24,7 +25,12 @@ export function About() {
           <div className="about__text">
             <div className="section-header">
               <div className="section-eyebrow">Om oss</div>
-              <h2 className="section-title">Lokal verkstad med <span className="title-accent">hjärta</span></h2>
+              <h2 className="section-title">
+                <SectionHeader
+                  eyebrow="Om oss"
+                  title={<span>Lokal verkstad med <span className="title-accent">hjärta</span></span>}
+                />
+              </h2>
             </div>
             <p className="about__body">Brynäs Bilservice grundades 2021 och är en personlig, oberoende bilverkstad i Brynäs, Gävle. Vi är en av få verkstäder i regionen med specialistkompetens på nästa generations elbilar — inklusive kinesiska märken som Aiways, BYD och Exlantix som ofta saknar auktoriserade verkstäder i Sverige.</p>
             <p className="about__body">Vi arbetar med alla bilmärken, från enkla oljebyten till komplexa motorbyten och växellådsrenoveringar. Hittar vi något extra under arbetet ringer vi alltid kunden först. Inget görs utan ditt godkännande — inga överraskningar på fakturan.</p>

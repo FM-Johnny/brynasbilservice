@@ -15,10 +15,10 @@ export function Header() {
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
   const navLinks = [
-    { href: '#hem', label: 'Hem' },
+    // { href: '#hem', label: 'Hem' },
     { href: '#tjanster', label: 'Tjänster' },
-    { href: '#alla-tjanster', label: 'Alla tjänster' },
-    { href: '#om-oss', label: 'Om oss' },
+    // { href: '#alla-tjanster', label: 'Alla tjänster' },
+    // { href: '#om-oss', label: 'Om oss' },
     { href: '#kontakt', label: 'Kontakt & Öppettider' },
   ]
 
@@ -30,7 +30,7 @@ export function Header() {
             <img src={logo1} alt="Brynäs Bilservice" width="220" height="73" className="logo__img" loading="eager" />
           </a>
 
-          <nav aria-label="Huvudnavigation">
+          <nav aria-label="Huvudnavigation" style={{ marginLeft: 'auto' }}>
             <ul className="nav__links">
               {navLinks.map(l => (
                 <li key={l.href}><a href={l.href}>{l.label}</a></li>

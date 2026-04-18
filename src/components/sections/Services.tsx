@@ -7,6 +7,7 @@ import { CarSaleIcon } from '../icons/CarSaleIcon'
 import { MonitorIcon } from '../icons/MonitorIcon'
 import { TireIcon } from '../icons/TireIcon'
 import { WrenchIcon } from '../icons/WrenchIcon'
+import { SectionHeader } from '../ui/SectionHeader'
 
 const cards = [
   {
@@ -57,9 +58,11 @@ export function Services() {
     <section className="services" id="tjanster">
       <div className="container">
         <div className="section-header">
-          <div className="section-eyebrow">Vad vi erbjuder</div>
-          <h2 className="section-title">Våra <span className="title-accent">tjänster</span></h2>
-          <p className="section-desc">Vi utför alla typer av bilarbeten — från enkel service till komplexa motorreparationer. Alltid märkesoberoende, alltid ärliga priser.</p>
+          <SectionHeader
+            eyebrow="Vad vi erbjuder"
+            title={<span>Våra <span className="title-accent">tjänster</span></span>}
+            description="Vi utför alla typer av bilarbeten — från enkel service till komplexa motorreparationer. Alltid märkesoberoende, alltid ärliga priser."
+          />
         </div>
 
         <div className="services__grid">

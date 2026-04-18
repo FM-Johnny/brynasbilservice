@@ -2,6 +2,7 @@ import { ClockIcon } from '../icons/ClockIcon'
 import { DollarIcon } from '../icons/DollarIcon'
 import { ShieldIcon } from '../icons/ShieldIcon'
 import { UsersIcon } from '../icons/UsersIcon'
+import { SectionHeader } from '../ui/SectionHeader'
 
 const cards = [
   {
@@ -31,8 +32,10 @@ export function WhyUs() {
     <section className="why-us">
       <div className="container">
         <div className="section-header">
-          <div className="section-eyebrow">Varför Brynäs Bilservice</div>
-          <h2 className="section-title">Det lilla extra som <span className="title-accent">gör skillnad</span></h2>
+          <SectionHeader
+            eyebrow="Varför Brynäs Bilservice"
+            title={<span>Det lilla extra som <span className="title-accent">gör skillnad</span></span>}
+          />
         </div>
         <div className="why-grid">
           {cards.map(c => (

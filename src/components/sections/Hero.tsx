@@ -4,6 +4,7 @@ import { ClockIcon } from '../icons/ClockIcon'
 import { MapPinIcon } from '../icons/MapPinIcon'
 import { BoltIcon } from '../icons/BoltIcon'
 import { DollarIcon } from '../icons/DollarIcon'
+import { Button } from '../ui/Button'
 import mechImg from '../../assets/images/mech_inspects_brakes1.jpg'
 
 export function Hero() {
@@ -16,10 +17,10 @@ export function Hero() {
         <div className="container">
           <div className="hero__info-bar">
             <InfoItem icon={<CheckIcon />} text="Alla bilmärken" />
-            <InfoItem icon={<ClockIcon />} text="Tis–Fre 08–16" />
-            <InfoItem icon={<MapPinIcon />} text="Utmarksvägen 21B, 802 91 Gävle" />
             <InfoItem icon={<BoltIcon />} text="Snabb service" />
             <InfoItem icon={<DollarIcon />} text="Konkurrenskraftiga priser" />
+            <InfoItem icon={<ClockIcon />} text="Tis–Fre 08–16" />            
+            <InfoItem icon={<MapPinIcon />} text="Utmarksvägen 21B, 802 91 Gävle" />            
           </div>
         </div>
       </div>
@@ -41,11 +42,11 @@ export function Hero() {
                 Brynäs Bilservice är din lokala, oberoende verkstad i Gävle. Vi utför all typ av service och reparation — för alla bilmärken, till konkurrenskraftiga priser.
               </p>
               <div className="hero__actions">
-                <a href="tel:0705533395" className="btn btn--primary">
-                  <PhoneIcon className="w-4 h-4" />
-                  Ring oss nu
-                </a>
-                <a href="#kontakt" className="btn btn--outline">Boka tid</a>
+                <Button href="#kontakt" variant="primary">Boka tid</Button>
+                <Button href="tel:+46705533395" variant="outline">
+                <PhoneIcon className="w-4 h-4" />
+                Ring oss nu
+              </Button>                
               </div>
             </div>
 

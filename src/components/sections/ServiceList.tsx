@@ -1,3 +1,5 @@
+import { SectionHeader } from '../ui/SectionHeader';
+
 const items = [
   { name: 'Bilservice & oljebyte' },
   { name: 'Bromsbyte & bromskontroll' },
@@ -25,8 +27,10 @@ export function ServiceList() {
     <section className="service-list-section" id="alla-tjanster">
       <div className="container">
         <div className="section-header">
-          <div className="section-eyebrow">Komplett utbud</div>
-          <h2 className="section-title">Allt vi <span className="title-accent">utför</span></h2>
+          <SectionHeader
+            eyebrow="Komplett utbud"
+            title={<span>Allt vi <span className="title-accent">utför</span></span>}
+          />
         </div>
         <div className="service-list-grid">
           {items.map(item => (

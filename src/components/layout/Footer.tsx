@@ -21,7 +21,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <h3 className="footer-col-title">Tjänster</h3>
             <ul className="footer-links">
               <li><a href="#tjanster">Bilservice</a></li>
@@ -31,20 +31,22 @@ export function Footer() {
               <li><a href="#tjanster">Felsökning</a></li>
               <li><a href="#tjanster">Bilhandel</a></li>
             </ul>
-          </div>
+          </div> */}
 
           <div>
             <h3 className="footer-col-title">Kontakt</h3>
             <ul className="footer-links">
-              <li><a href="tel:0705533395">070-553 33 95</a></li>
+              <li><a href="tel:+46705533395">070-553 33 95</a></li>
               <li><a href="mailto:info@brynasbilservice.se">info@brynasbilservice.se</a></li>
               <li><a href="https://maps.google.com/?q=Utmarksvägen+21B+Gävle" target="_blank" rel="noopener noreferrer">Utmarksvägen 21B, Gävle</a></li>
             </ul>
-            <br />
+            {/* <br /> */}
+            </div>
+            <div>
             <h3 className="footer-col-title">Öppettider</h3>
             <ul className="footer-links">
-              <li>Mån–Fre: 08:00–16:00</li>
-              <li>Lördag: Förfrågan</li>
+              <li>Tis – Fre: 08:00 – 16:00</li>
+              <li>Mån, Lör: Förfrågan</li>
               <li>Söndag: Stängt</li>
             </ul>
           </div>
@@ -53,7 +55,7 @@ export function Footer() {
 
         <div className="footer-bottom">
           <p className="footer-copy">© 2025 Brynäs Bilservice AB — Org.nr 559343-5307 — Gävle</p>
-          <p className="footer-copy">Utmarksvägen 21B, 802 91 Gävle</p>
+          <p className="footer-copy">Skapad och förvaltas av Fenrir Media AB</p>
         </div>
       </div>
     </footer>

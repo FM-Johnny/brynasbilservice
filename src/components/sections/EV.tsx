@@ -1,3 +1,5 @@
+import { SectionHeader } from '../ui/SectionHeader';
+
 const brands = [
   { name: 'Aiways' },
   { name: 'Exlantix', special: true },
@@ -21,12 +23,16 @@ export function EV() {
       <div className="container">
         <div className="ev-inner">
           <div className="ev-text">
-            <div className="section-eyebrow justify-start">
-              <span className="block h-px w-6 bg-linear-to-r from-(--color-red) to-(--color-gold)" />
-              Framtidens bilar
-              <span className="block h-px w-6 bg-linear-to-r from-(--color-gold) to-(--color-red)" />
-            </div>
-            <h2 className="section-title text-left">Specialister på <span className="title-accent">elbilar</span></h2>
+            <SectionHeader
+              eyebrow="Framtidens bilar"
+              title={<span>Specialister på <span className="title-accent">elbilar</span></span>}
+              description={
+                <>
+                  Vi är en av Gävleborgs få verkstäder med kompetens att serva nya kinesiska elbilsmärken som saknar auktoriserade verkstäder i Sverige. Våra mekaniker är utbildade att hantera högvoltssystem och moderna diagnostiksystem.<br /><br />
+                  Vi samarbetar med <strong className="text-white">Däckleader</strong> och <strong className="text-white">Autobutler</strong> — beställ däck online och välj oss som monteringsstation, eller jämför priser via Autobutler.
+                </>
+              }
+            />
             <p className="mb-8 leading-[1.8] text-(--color-text-muted)">
               Vi är en av Gävleborgs få verkstäder med kompetens att serva nya kinesiska elbilsmärken som saknar auktoriserade verkstäder i Sverige. Våra mekaniker är utbildade att hantera högvoltssystem och moderna diagnostiksystem.<br /><br />
             </p>
@@ -36,7 +42,7 @@ export function EV() {
             <a href="tel:0705533395" className="btn btn--primary">Ring för offert</a>
           </div>
           <div className="ev-brands">
-            <div className="ev-brands__label">Vi servar bl.a.</div>
+            <div className="ev-brands__label">Vi servar exempelvis</div>
             <div className="ev-brands__grid">
               {brands.map(b => (
                 <span
