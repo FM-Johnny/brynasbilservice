@@ -14,35 +14,13 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Step 2: Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
-
-      # Step 2.1: Clean node_modules and package-lock.json for client
-      - name: Clean client dependencies
-        working-directory: client
-        run: |
-          rm -rf node_modules package-lock.json
-
-      # Step 2.2: Force clean and reinstall dependencies for client
-      - name: Force clean and reinstall client dependencies
-        working-directory: client
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install --force
-
-      # Step 2.3: Debug PostCSS configuration and installed node_modules for client
-      - name: Debug PostCSS configuration and node_modules for client
-        working-directory: client
-        run: |
-          echo "PostCSS Config:"
-          cat postcss.config.js || echo "No postcss.config.js found"
-          echo "Installed node_modules:"
-          ls -la node_modules || echo "node_modules directory not found"
+          node-version: '20'
 
       # Step 3: Install dependencies for the client
       - name: Install client dependencies
@@ -65,28 +43,6 @@ jobs:
       - name: Install server dependencies
         working-directory: server
         run: npm install
-
-      # Step 6.1: Clean node_modules and package-lock.json for server
-      - name: Clean server dependencies
-        working-directory: server
-        run: |
-          rm -rf node_modules package-lock.json
-
-      # Step 6.2: Force clean and reinstall dependencies for server
-      - name: Force clean and reinstall server dependencies
-        working-directory: server
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install --force
-
-      # Step 6.3: Debug PostCSS configuration and installed node_modules for server
-      - name: Debug PostCSS configuration and node_modules for server
-        working-directory: server
-        run: |
-          echo "PostCSS Config:"
-          cat postcss.config.js || echo "No postcss.config.js found"
-          echo "Installed node_modules:"
-          ls -la node_modules || echo "node_modules directory not found"
 
       # Step 7: Prepare SSH for server deployment
       - name: Prepare SSH
