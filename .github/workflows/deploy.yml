@@ -86,5 +86,8 @@ jobs:
           ssh deploy-target "mkdir -p \"$DEPLOY_PATH/public\""
           tar -C client/dist -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH/public\""
           
+          # Copy index.html to root for directory index
+          ssh deploy-target "cp \"$DEPLOY_PATH/public/index.html\" \"$DEPLOY_PATH/index.html\""
+          
           # Restart server (load fnm and use Node 16, then run npm and pm2)
           ssh deploy-target "export FNM_PATH=\"\$HOME/.local/share/fnm\" && export PATH=\"\$FNM_PATH:\$PATH\" && eval \"\$(fnm env --shell bash)\" && fnm use 16 && cd \"$DEPLOY_PATH\" && npm install --production && (pm2 restart brynasbilservice 2>/dev/null || pm2 start index.js --name brynasbilservice)"
