@@ -53,87 +53,124 @@ export const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>&times;</button>
+        <button className="modal-close text-gray-500" onClick={onClose}>&times;</button>
         <form onSubmit={handleSubmit} className="modal-form">
           <h2 className="modal-title">Boka en tid</h2>
+          
+          <div className='flex gap-4 mb-4 w-full'>
+            <div className='w-1/2'>
+              <label className="modal-label">
+                Datum
+              </label>
+              <DatePicker
+                selected={selectedDate ? new Date(selectedDate) : null}
+                onChange={(date) => setSelectedDate(date)}
+                locale={sv}
+                dateFormat="EEEE, dd/MM" // Update format to include day of the week
+                className="modal-input w-full"
+                placeholderText="Välj ett datum"
+                required
+              />
+            </div>
 
-          <label className="modal-label">
-            Datum:
-            <DatePicker
-              selected={selectedDate ? new Date(selectedDate) : null}
-              onChange={(date) => setSelectedDate(date)}
-              locale={sv}
-              dateFormat="dd/MM/yyyy"
-              className="modal-input"
-              placeholderText="Välj ett datum"
-              required
-            />
-          </label>
+            <div className='w-1/2'>
+              <label className="modal-label">
+                Tid
+              </label>
+              <TimePicker
+                onChange={setSelectedTime}
+                value={selectedTime}
+                clockIcon={null}
+                disableClock={true}
+                format="HH:mm"
+                className="modal-input w-full"
+                required
+              />
+            </div>
+          </div>
 
-          <label className="block mb-2">
-            Tid:
-            <TimePicker
-              onChange={setSelectedTime}
-              value={selectedTime}
-              clockIcon={null}
-              disableClock={true}
-              format="HH:mm"
-              className="modal-input"
-              required
-            />
-          </label>
+          <div className='mb-4 w-full'>
+            <div>
+              <label className="modal-label w-full">
+                Service
+              </label> 
+            </div>
+            <div>    
+              <select
+                value={selectedService}
+                onChange={(e) => setSelectedService(e.target.value)}
+                className="modal-input w-full"
+                required
+              >
+                <option value="">Välj en service du vill ha utfört</option>
+                {services.map(service => (
+                  <option key={service.id} value={service.id}>{service.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-          <label className="modal-label">
-            Tjänst:
-            <select
-              value={selectedService}
-              onChange={(e) => setSelectedService(e.target.value)}
-              className="modal-input"
-              required
-            >
-              <option value="">Välj en tjänst</option>
-              {services.map(service => (
-                <option key={service.id} value={service.id}>{service.name}</option>
-              ))}
-            </select>
-          </label>
+          <div className='mb-4 w-full'>
+            <div>
+              <label className="modal-label w-full">
+                Namn
+              </label>
+            </div>            
+            <div>            
+              <input
+                type="text"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                placeholder="Ange för- och efternamn"
+                className="modal-input w-full"
+                required
+              />
+            </div>
+          </div>
 
-          <label className="modal-label">
-            Namn:
-            <input
-              type="text"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              className="modal-input"
-              required
-            />
-          </label>
+          <div className='mb-4 w-full'>
+            <div>
+              <label className="modal-label">
+                E-post <span className="text-red-500">*</span>
+              </label>
+            </div>
+            <div>
+              <input
+                type="email"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                placeholder='Ange din e-postadress'
+                className="modal-input w-full"
+                required
+              />
+            </div>
+          </div>
 
-          <label className="modal-label">
-            E-post:
-            <input
-              type="email"
-              value={customerEmail}
-              onChange={(e) => setCustomerEmail(e.target.value)}
-              className="modal-input"
-              required
-            />
-          </label>
-
-          <label className="modal-label">
-            Telefon:
-            <input
-              type="tel"
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-              className="block w-full p-2 border rounded"
-              required
-            />
-          </label>
-
-          <button type="submit" className="modal-submit">
-            Skicka bokning
-          </button>
+          <div className='mb-4 w-full'>
+            <div>
+              <label className="modal-label">
+                Telefon <span className="text-red-500">*</span>
+              </label>
+            </div>
+            <div>
+              <input
+                type="tel"
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
+                placeholder='Ange ditt telefonnummer'
+                className="modal-input w-full"
+                required
+              />
+            </div>
+          </div>
+          <div className="flex w-full justify-end gap-2 items-baseline">
+            <div className="text-sm text-gray-500">
+              Fält märkt med * är obligatoriska
+            </div>
+            <button type="submit" className="modal-submit btn btn--primary">
+              Skicka bokning
+            </button>
+          </div>
         </form>
       </div>
     </div>
