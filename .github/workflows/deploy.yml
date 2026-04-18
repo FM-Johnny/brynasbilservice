@@ -28,6 +28,13 @@ jobs:
         run: |
           rm -rf node_modules package-lock.json
 
+      # Step 2.2: Force clean and reinstall dependencies for client
+      - name: Force clean and reinstall client dependencies
+        working-directory: client
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install --force
+
       # Step 3: Install dependencies for the client
       - name: Install client dependencies
         working-directory: client
@@ -55,6 +62,13 @@ jobs:
         working-directory: server
         run: |
           rm -rf node_modules package-lock.json
+
+      # Step 6.2: Force clean and reinstall dependencies for server
+      - name: Force clean and reinstall server dependencies
+        working-directory: server
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install --force
 
       # Step 7: Prepare SSH for server deployment
       - name: Prepare SSH
