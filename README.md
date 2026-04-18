@@ -35,7 +35,7 @@ npm run build
 
 | Field    | Value                        |
 | -------- | ---------------------------- |
-| Host     | localhost (via SSH tunnel)    |
+| Host     | localhost (via SSH tunnel)   |
 | Port     | 3306                         |
 | Database | fenrirm_brynasbilservice     |
 | Username | fenrirm_brynasbilservice     |
@@ -72,7 +72,7 @@ Deployment is automated via GitHub Actions on every push to `main`.
 
 | Secret           | Description                                      |
 | ---------------- | ------------------------------------------------ |
-| `DEPLOY_SSH_KEY` | Private SSH key (ed25519) for server access       |
+| `DEPLOY_SSH_KEY` | Private SSH key (ed25519) for server access      |
 | `DEPLOY_HOST`    | Server IP address                                |
 | `DEPLOY_PORT`    | SSH port (default: 22)                           |
 | `DEPLOY_USER`    | SSH username                                     |
@@ -84,7 +84,7 @@ You can also trigger a deploy manually from the GitHub Actions tab using `workfl
 
 ## Project Structure
 
-```
+```bash
 src/
 ├── assets/          # Images and static assets
 ├── components/
