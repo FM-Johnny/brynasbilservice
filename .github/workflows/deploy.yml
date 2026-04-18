@@ -22,6 +22,12 @@ jobs:
         with:
           node-version: '18'
 
+      # Step 2.1: Clean node_modules and package-lock.json for client
+      - name: Clean client dependencies
+        working-directory: client
+        run: |
+          rm -rf node_modules package-lock.json
+
       # Step 3: Install dependencies for the client
       - name: Install client dependencies
         working-directory: client
@@ -43,6 +49,12 @@ jobs:
       - name: Install server dependencies
         working-directory: server
         run: npm install
+
+      # Step 6.1: Clean node_modules and package-lock.json for server
+      - name: Clean server dependencies
+        working-directory: server
+        run: |
+          rm -rf node_modules package-lock.json
 
       # Step 7: Prepare SSH for server deployment
       - name: Prepare SSH
