@@ -1,0 +1,87 @@
+name: Deploy Client and Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Client and Server
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies for the client
+      - name: Install client dependencies
+        working-directory: client
+        run: npm install
+
+      # Step 4: Build the client
+      - name: Build client
+        working-directory: client
+        run: npm run build
+
+      # Step 5: Deploy the client
+      - name: Deploy client
+        working-directory: client
+        run: |
+          # Replace the following command with your actual deployment command for the client
+          echo "Deploying client to frontend hosting service..."
+
+      # Step 6: Install dependencies for the server
+      - name: Install server dependencies
+        working-directory: server
+        run: npm install
+
+      # Step 7: Prepare SSH for server deployment
+      - name: Prepare SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -e
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          PORT="${DEPLOY_PORT:-22}"
+          ssh-keyscan -p "$PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host deploy-target
+            HostName $DEPLOY_HOST
+            User $DEPLOY_USER
+            Port $PORT
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+          EOF
+          chmod 600 ~/.ssh/config
+
+      # Step 8: Verify SSH connection
+      - name: Verify SSH connection
+        run: ssh -o BatchMode=yes deploy-target "echo SSH connection successful"
+
+      # Step 9: Deploy server
+      - name: Deploy server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          set -e
+          ssh deploy-target "mkdir -p \"$DEPLOY_PATH\" && find \"$DEPLOY_PATH\" -mindepth 1 -maxdepth 1 -exec rm -rf {} +"
+          tar -C server -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH\""
