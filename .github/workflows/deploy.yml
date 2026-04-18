@@ -86,5 +86,5 @@ jobs:
           ssh deploy-target "mkdir -p \"$DEPLOY_PATH/public\""
           tar -C client/dist -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH/public\""
           
-          # Restart server (using pm2 or similar)
-          ssh deploy-target "cd \"$DEPLOY_PATH\" && npm install --production && (pm2 restart brynasbilservice 2>/dev/null || pm2 start index.js --name brynasbilservice)"
+          # Restart server (source nvm/node paths, then run npm and pm2)
+          ssh deploy-target "source ~/.bashrc 2>/dev/null || source ~/.bash_profile 2>/dev/null || true; export PATH=\$PATH:/usr/local/bin:~/.nvm/versions/node/*/bin; cd \"$DEPLOY_PATH\" && npm install --production && (pm2 restart brynasbilservice 2>/dev/null || pm2 start index.js --name brynasbilservice)"
