@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import axiosInstance from '../../api/axiosConfig'
+import { useLanguage } from '../../context/useLanguage'
 
 interface Booking {
   id: number
@@ -13,6 +13,7 @@ interface Booking {
 }
 
 export function BookingManagement() {
+  const { t } = useLanguage()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [filteredBookings, setFilteredBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
@@ -99,17 +100,17 @@ export function BookingManagement() {
   }
 
   if (loading) {
-    return <div className="p-6">Loading bookings...</div>
+    return <div className="p-6">{t('loading')}...</div>
   }
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6">
         <h3 className="text-lg leading-6 font-medium text-gray-900">
-          Booking Management
+          {t('bookingManagement')}
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-gray-500">
-          View and manage all bookings
+          {t('viewManageBookings')}
         </p>
       </div>
       
@@ -121,7 +122,7 @@ export function BookingManagement() {
               <input
                 type="text"
                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 rounded-md"
-                placeholder="Search by customer or service..."
+                placeholder={t('searchBookings')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -146,11 +147,11 @@ export function BookingManagement() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
-              <option value="all">All Statuses</option>
-              <option value="pending">Pending</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
+              <option value="all">{t('allStatuses')}</option>
+              <option value="pending">{t('pending')}</option>
+              <option value="confirmed">{t('confirmed')}</option>
+              <option value="completed">{t('completed')}</option>
+              <option value="cancelled">{t('cancelled')}</option>
             </select>
           </div>
         </div>
@@ -164,7 +165,7 @@ export function BookingManagement() {
             </div>
             <div className="ml-3">
               <p className="text-sm text-red-700">
-                {error}
+                {t('failedToFetch')} {t('bookingManagement')}
               </p>
             </div>
           </div>
@@ -176,19 +177,19 @@ export function BookingManagement() {
           <thead className="bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Customer
+                {t('customer')}
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Service
+                {t('service')}
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date & Time
+                {t('dateTime')}
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+                {t('status')}
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
+                {t('actions')}
               </th>
             </tr>
           </thead>
@@ -196,7 +197,7 @@ export function BookingManagement() {
             {filteredBookings.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
-                  No bookings found
+                  {t('noBookingsFound')}
                 </td>
               </tr>
             ) : (
@@ -209,7 +210,7 @@ export function BookingManagement() {
                     <div className="text-sm text-gray-900">{booking.service}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{booking.date} at {booking.time}</div>
+                    <div className="text-sm text-gray-900">{booking.date} {t('dateTime').split(' ')[2]} {booking.time}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -218,7 +219,7 @@ export function BookingManagement() {
                       booking.status === 'completed' ? 'bg-green-100 text-green-800' :
                       'bg-red-100 text-red-800'
                     }`}>
-                      {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                      {t(`statusBadge.${booking.status}`)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -227,16 +228,16 @@ export function BookingManagement() {
                       onChange={(e) => updateBookingStatus(booking.id, e.target.value as Booking['status'])}
                       className="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mr-2"
                     >
-                      <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
+                      <option value="pending">{t('pending')}</option>
+                      <option value="confirmed">{t('confirmed')}</option>
+                      <option value="completed">{t('completed')}</option>
+                      <option value="cancelled">{t('cancelled')}</option>
                     </select>
                     <button
                       onClick={() => deleteBooking(booking.id)}
                       className="text-red-600 hover:text-red-900"
                     >
-                      Delete
+                      {t('delete')}
                     </button>
                   </td>
                 </tr>

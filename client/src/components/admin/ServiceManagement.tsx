@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import axiosInstance from '../../api/axiosConfig'
+import { useLanguage } from '../../context/useLanguage'
 
 interface Service {
   id: number
@@ -11,6 +11,7 @@ interface Service {
 }
 
 export function ServiceManagement() {
+  const { t } = useLanguage()
   const [services, setServices] = useState<Service[]>([])
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
@@ -142,7 +143,7 @@ export function ServiceManagement() {
   }
 
   if (loading) {
-    return <div className="p-6">Loading services...</div>
+    return <div className="p-6">{t('loading')}...</div>
   }
 
   return (
@@ -151,17 +152,17 @@ export function ServiceManagement() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Service Management
+              {t('serviceManagement')}
             </h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Manage the services offered
+              {t('manageServices')}
             </p>
           </div>
           <button
             onClick={handleAddNew}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Add New Service
+            {t('addNewService')}
           </button>
         </div>
         
@@ -171,7 +172,7 @@ export function ServiceManagement() {
             <input
               type="text"
               className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 rounded-md"
-              placeholder="Search services..."
+              placeholder={t('searchServices')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -199,7 +200,7 @@ export function ServiceManagement() {
             </div>
             <div className="ml-3">
               <p className="text-sm text-red-700">
-                {error}
+                {t('failedToFetch')} {t('serviceManagement')}
               </p>
             </div>
           </div>
@@ -211,7 +212,7 @@ export function ServiceManagement() {
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Service Name
+                {t('serviceName')}
               </label>
               <div className="mt-1">
                 <input
@@ -227,7 +228,7 @@ export function ServiceManagement() {
 
             <div className="sm:col-span-3">
               <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                Price (SEK)
+                {t('price')}
               </label>
               <div className="mt-1">
                 <input
@@ -243,7 +244,7 @@ export function ServiceManagement() {
 
             <div className="sm:col-span-6">
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                Description
+                {t('description')}
               </label>
               <div className="mt-1">
                 <textarea
@@ -264,14 +265,14 @@ export function ServiceManagement() {
               onClick={handleCancel}
               className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="button"
               onClick={handleSave}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Save
+              {t('save')}
             </button>
           </div>
         </div>
@@ -281,16 +282,16 @@ export function ServiceManagement() {
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Service
+                  {t('service')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Description
+                  {t('description')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
+                  {t('price')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
+                  {t('actions')}
                 </th>
               </tr>
             </thead>
@@ -298,7 +299,7 @@ export function ServiceManagement() {
               {filteredServices.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
-                    No services found
+                    {t('noServicesFound')}
                   </td>
                 </tr>
               ) : (
@@ -318,13 +319,13 @@ export function ServiceManagement() {
                         onClick={() => handleEdit(service)}
                         className="text-indigo-600 hover:text-indigo-900 mr-4"
                       >
-                        Edit
+                        {t('edit')}
                       </button>
                       <button
                         onClick={() => handleDelete(service.id)}
                         className="text-red-600 hover:text-red-900"
                       >
-                        Delete
+                        {t('delete')}
                       </button>
                     </td>
                   </tr>
