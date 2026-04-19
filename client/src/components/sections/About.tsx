@@ -24,7 +24,6 @@ export function About() {
 
           <div className="about__text">
             <div className="section-header">
-              <div className="section-eyebrow">Om oss</div>
               <h2 className="section-title">
                 <SectionHeader
                   eyebrow="Om oss"
