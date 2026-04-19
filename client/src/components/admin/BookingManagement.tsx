@@ -1,25 +1,43 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import axiosInstance from '../../api/axiosConfig'
 import { useLanguage } from '../../context/useLanguage'
+import { format } from 'date-fns';
+import { sv } from 'date-fns/locale';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
 
 interface Booking {
   id: number
+  customer_id: number // Added customer_id field
   customer_name: string
-  service: string
+  service_name: string
+  service_price: number // Added service_price field
   date: string
   time: string
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
+  created_at: string
+  customer_email?: string
+  customer_phone?: string
+}
+
+interface Customer {
+  id: number
+  name: string
+  email: string
+  phone: string
   created_at: string
 }
 
 export function BookingManagement() {
   const { t } = useLanguage()
   const [bookings, setBookings] = useState<Booking[]>([])
-  const [filteredBookings, setFilteredBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+  const [customers, setCustomers] = useState<Customer[]>([]);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -30,8 +48,10 @@ export function BookingManagement() {
             'Authorization': `Bearer ${token}`
           }
         })
-        setBookings(response.data)
-        setFilteredBookings(response.data)
+        setBookings(response.data.map((booking: Booking) => ({
+          ...booking,
+          service_price: booking.service_price // Map service_price from response
+        })))
         setLoading(false)
       } catch (error) {
         setError('Failed to fetch bookings')
@@ -44,26 +64,48 @@ export function BookingManagement() {
   }, [])
 
   useEffect(() => {
-    // Filter bookings based on search term and status filter
-    const filterBookings = () => {
-      let result = bookings
-      
-      if (searchTerm) {
-        result = result.filter(booking => 
-          booking.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          booking.service.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+    const fetchCustomers = async () => {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const response = await axiosInstance.get('/api/admin/customers', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCustomers(response.data);
+      } catch (error) {
+        setError('Failed to fetch customers');
+        console.error(error);
       }
-      
-      if (statusFilter !== 'all') {
-        result = result.filter(booking => booking.status === statusFilter)
+    };
+
+    fetchCustomers();
+  }, []);
+
+  // Initialize sortConfig with default sorting on 'date' and 'time'
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Booking; direction: 'asc' | 'desc' } | null>({
+    key: 'date',
+    direction: 'asc',
+  });
+
+  const sortedBookings = useMemo(() => {
+    if (!sortConfig) return bookings;
+
+    const sorted = [...bookings].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+
+      // Secondary sorting by 'time' if primary key is 'date'
+      if (sortConfig.key === 'date') {
+        if (a.time < b.time) return -1;
+        if (a.time > b.time) return 1;
       }
-      
-      setFilteredBookings(result)
-    }
-    
-    filterBookings()
-  }, [bookings, searchTerm, statusFilter])
+
+      return 0;
+    });
+
+    return sorted;
+  }, [bookings, sortConfig]);
 
   const updateBookingStatus = async (id: number, status: Booking['status']) => {
     try {
@@ -99,6 +141,64 @@ export function BookingManagement() {
     }
   }
 
+  const openModal = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedBooking(null);
+  };
+
+  // Add debugging logs to verify sorting behavior
+  console.log('Sort Config:', sortConfig);
+  console.log('Sorted Bookings:', sortedBookings);
+
+  const handleSort = (key: keyof Booking) => {
+    setSortConfig((prev) => {
+      if (prev && prev.key === key) {
+        return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+      }
+      return { key, direction: 'asc' };
+    });
+  };
+
+  const getSortIcon = (key: keyof Booking) => {
+    if (!sortConfig || sortConfig.key !== key) return null;
+    return sortConfig.direction === 'asc' ? (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-4 w-4 inline ml-1"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M5 15l7-7 7 7"
+        />
+      </svg>
+    ) : (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-4 w-4 inline ml-1"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    );
+  };
+
   if (loading) {
     return <div className="p-6">{t('loading')}...</div>
   }
@@ -121,7 +221,7 @@ export function BookingManagement() {
             <div className="relative rounded-md shadow-sm">
               <input
                 type="text"
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 rounded-md"
+                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 rounded-md text-black"
                 placeholder={t('searchBookings')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -145,7 +245,7 @@ export function BookingManagement() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md text-black"
             >
               <option value="all">{t('allStatuses')}</option>
               <option value="pending">{t('pending')}</option>
@@ -176,17 +276,45 @@ export function BookingManagement() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                onClick={() => handleSort('customer_name')}
+              >
                 {t('customer')}
+                {getSortIcon('customer_name')}
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                onClick={() => handleSort('service_name')}
+              >
                 {t('service')}
+                {getSortIcon('service_name')}
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('dateTime')}
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                onClick={() => handleSort('date')}
+              >
+                {t('date')}
+                {getSortIcon('date')}
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                onClick={() => handleSort('time')}
+              >
+                {t('time')}
+                {getSortIcon('time')}
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                onClick={() => handleSort('status')}
+              >
                 {t('status')}
+                {getSortIcon('status')}
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {t('actions')}
@@ -194,58 +322,139 @@ export function BookingManagement() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredBookings.length === 0 ? (
+            {sortedBookings.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
                   {t('noBookingsFound')}
                 </td>
               </tr>
             ) : (
-              filteredBookings.map((booking) => (
-                <tr key={booking.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{booking.customer_name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{booking.service}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{booking.date} {t('dateTime').split(' ')[2]} {booking.time}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      booking.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
-                      booking.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {t(`statusBadge.${booking.status}`)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <select
-                      value={booking.status}
-                      onChange={(e) => updateBookingStatus(booking.id, e.target.value as Booking['status'])}
-                      className="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mr-2"
-                    >
-                      <option value="pending">{t('pending')}</option>
-                      <option value="confirmed">{t('confirmed')}</option>
-                      <option value="completed">{t('completed')}</option>
-                      <option value="cancelled">{t('cancelled')}</option>
-                    </select>
-                    <button
-                      onClick={() => deleteBooking(booking.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      {t('delete')}
-                    </button>
-                  </td>
-                </tr>
-              ))
+              sortedBookings.map((booking) => {
+                let formattedDate = ''
+                const customer = customers.find((c) => c.id === booking.customer_id);
+
+                try {
+                  const parsedDate = new Date(booking.date)
+                  formattedDate = format(parsedDate, 'EEEE, dd/MM', { locale: sv })
+                } catch (error) {
+                  console.error('Error parsing date or time:', error)
+                }
+
+                // Fix invalid time value error by parsing time correctly
+                const formattedTime = booking.time ? format(new Date(`1970-01-01T${booking.time}`), 'HH:mm', { locale: sv }) : t('invalidTime');
+
+                return (
+                  <tr key={booking.id} onClick={() => openModal({ ...booking, customer_email: customer?.email, customer_phone: customer?.phone })} className="cursor-pointer hover:bg-gray-100">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{booking.customer_name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{booking.service_name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{formattedDate || t('invalidDate')}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{formattedTime || t('invalidTime')}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <select
+                        value={booking.status}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => updateBookingStatus(booking.id, e.target.value as Booking['status'])}
+                        className="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-gray-900 bg-white"
+                      >
+                        <option value="pending">{t('pending')}</option>
+                        <option value="confirmed">{t('confirmed')}</option>
+                        <option value="completed">{t('completed')}</option>
+                        <option value="cancelled">{t('cancelled')}</option>
+                      </select>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteBooking(booking.id);
+                        }}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        {t('delete')}
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Modal for displaying booking details */}
+      <Transition.Root show={isModalOpen} as={Fragment}>
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={closeModal}>
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            </Transition.Child>
+
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+              &#8203;
+            </span>
+
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              enterTo="opacity-100 translate-y-0 sm:scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            >
+              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div>
+                  <div className="mt-3 text-center sm:mt-5">
+                    <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                      {t('bookingDetails')}
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      {selectedBooking && (
+                        <div className="text-sm text-gray-500">
+                          <p><strong>{t('bookingId')}:</strong> {selectedBooking.id}</p>
+                          <p><strong>{t('customer')}:</strong> {selectedBooking.customer_name}</p>
+                          <p><strong>{t('email')}:</strong> {selectedBooking.customer_email || t('notAvailable')}</p>
+                          <p><strong>{t('phone')}:</strong> {selectedBooking.customer_phone || t('notAvailable')}</p>
+                          <p><strong>{t('service')}:</strong> {selectedBooking.service_name || t('notAvailable')}</p>
+                          <p><strong>{t('date')}:</strong> {format(new Date(selectedBooking.date), 'EEEE, dd/MM', { locale: sv })}</p>
+                          <p><strong>{t('time')}:</strong> {selectedBooking.time}</p>
+                          <p><strong>{t('status')}:</strong> {t(`statusBadge.${selectedBooking.status}`)}</p>
+                          <p><strong>{t('createdAt')}:</strong> {format(new Date(selectedBooking.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-5 sm:mt-6">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    onClick={closeModal}
+                  >
+                    {t('close')}
+                  </button>
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition.Root>
     </div>
   )
 }

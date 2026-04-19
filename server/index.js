@@ -134,12 +134,13 @@ const authenticateAdmin = (req, res, next) => {
 // Get all bookings
 app.get('/api/admin/bookings', authenticateAdmin, (req, res) => {
   const query = `
-    SELECT b.id, c.name as customer_name, b.service, b.date, b.time, b.status, b.created_at
+    SELECT b.id, c.name as customer_name, s.name as service_name, s.price as service_price, b.date, b.time, b.status, b.created_at
     FROM bookings b
     JOIN customers c ON b.customer_id = c.id
+    JOIN services s ON b.service = s.id
     ORDER BY b.created_at DESC
   `;
-  
+
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching bookings:', err);
@@ -237,6 +238,20 @@ app.delete('/api/admin/services/:id', authenticateAdmin, (req, res) => {
       res.status(500).json({ error: 'Failed to delete service' });
     } else {
       res.json({ message: 'Service deleted successfully' });
+    }
+  });
+});
+
+// Add endpoint to fetch customer details
+app.get('/api/admin/customers', authenticateAdmin, (req, res) => {
+  const query = 'SELECT id, name, email, phone, created_at FROM customers ORDER BY created_at DESC';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching customers:', err);
+      res.status(500).json({ error: 'Failed to fetch customers' });
+    } else {
+      res.json(results);
     }
   });
 });

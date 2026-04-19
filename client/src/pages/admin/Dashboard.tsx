@@ -66,7 +66,7 @@ export default function AdminDashboard() {
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as 'sv' | 'en')}
-                  className="mr-4 px-3 py-2 text-sm font-medium text-white bg-transparent border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                  className="mr-4 px-3 py-2 text-sm font-medium text-black bg-transparent border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
                 >
                   <option value="sv">SV</option>
                   <option value="en">EN</option>

@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react'
 import axiosInstance from '../../api/axiosConfig'
 import { useLanguage } from '../../context/useLanguage'
+import { format } from 'date-fns';
+import { sv } from 'date-fns/locale';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
+import { DialogBackdrop, DialogTitle } from '@headlessui/react';
 
 interface Service {
   id: number
@@ -19,6 +24,8 @@ export function ServiceManagement() {
   const [isEditing, setIsEditing] = useState(false)
   const [currentService, setCurrentService] = useState<Service | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -142,6 +149,16 @@ export function ServiceManagement() {
     setIsEditing(true)
   }
 
+  const openModal = (service: Service) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedService(null);
+  };
+
   if (loading) {
     return <div className="p-6">{t('loading')}...</div>
   }
@@ -221,7 +238,7 @@ export function ServiceManagement() {
                   id="name"
                   value={currentService?.name || ''}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md text-black"
                 />
               </div>
             </div>
@@ -237,7 +254,7 @@ export function ServiceManagement() {
                   id="price"
                   value={currentService?.price || ''}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md text-black"
                 />
               </div>
             </div>
@@ -253,7 +270,7 @@ export function ServiceManagement() {
                   rows={3}
                   value={currentService?.description || ''}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md text-black"
                 />
               </div>
             </div>
@@ -303,38 +320,108 @@ export function ServiceManagement() {
                   </td>
                 </tr>
               ) : (
-                filteredServices.map((service) => (
-                  <tr key={service.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{service.name}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 max-w-xs truncate">{service.description}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{service.price} SEK</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleEdit(service)}
-                        className="text-indigo-600 hover:text-indigo-900 mr-4"
-                      >
-                        {t('edit')}
-                      </button>
-                      <button
-                        onClick={() => handleDelete(service.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        {t('delete')}
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                filteredServices.map((service) => {
+                  return (
+                    <tr key={service.id} onClick={() => openModal(service)} className="cursor-pointer hover:bg-gray-100">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{service.name}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900 max-w-xs truncate">{service.description}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{service.price} SEK</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(service);
+                          }}
+                          className="text-indigo-600 hover:text-indigo-900 mr-4"
+                        >
+                          {t('edit')}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(service.id);
+                          }}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          {t('delete')}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
         </div>
       )}
+      
+      {/* Modal for displaying service details */}
+      <Transition.Root show={isModalOpen} as={Fragment}>
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={closeModal}>
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <DialogBackdrop className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            </Transition.Child>
+
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+              &#8203;
+            </span>
+
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              enterTo="opacity-100 translate-y-0 sm:scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            >
+              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div>
+                  <div className="mt-3 text-center sm:mt-5">
+                    <DialogTitle as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                      {t('serviceDetails')}
+                    </DialogTitle>
+                    <div className="mt-2">
+                      {selectedService && (
+                        <div className="text-sm text-gray-500">
+                          <p><strong>{t('serviceName')}:</strong> {selectedService.name}</p>
+                          <p><strong>{t('description')}:</strong> {selectedService.description}</p>
+                          <p><strong>{t('price')}:</strong> {selectedService.price} SEK</p>
+                          <p><strong>{t('createdAt')}:</strong> {format(new Date(selectedService.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-5 sm:mt-6">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    onClick={closeModal}
+                  >
+                    {t('close')}
+                  </button>
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition.Root>
     </div>
   )
 }
