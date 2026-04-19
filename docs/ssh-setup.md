@@ -11,7 +11,7 @@ This document outlines the steps to set up and configure the SSH key for the `fe
   ssh-keygen -t ed25519 -f ~/.ssh/fenrirm -C "fenrirm@194.14.207.224"
   ```
 
-  - Press `Enter` to skip the passphrase (or set one if desired).
+- Press `Enter` to skip the passphrase (or set one if desired).
 
 ## Step 2: Add Public Key to the Server
 
@@ -21,11 +21,11 @@ This document outlines the steps to set up and configure the SSH key for the `fe
   ssh-copy-id -i ~/.ssh/fenrirm.pub fenrirm@194.14.207.224
   ```
 
-  - This will add the public key to the `~/.ssh/authorized_keys` file on the server.
+- This will add the public key to the `~/.ssh/authorized_keys` file on the server.
 
-2. If `ssh-copy-id` is not available, manually copy the key:
+1. If `ssh-copy-id` is not available, manually copy the key:
 
-  - Display the public key on your local machine:
+- Display the public key on your local machine:
 
   ```bash
   cat ~/.ssh/fenrirm.pub

@@ -111,6 +111,136 @@ app.post('/api/bookings', (req, res) => {
   }
 });
 
+// Admin authentication middleware
+const authenticateAdmin = (req, res, next) => {
+  // Check for admin authentication header
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  
+  if (!token) {
+    return res.status(401).json({ error: 'Access denied. No token provided.' });
+  }
+  
+  // In a real implementation, you would verify the token with a secret key
+  // For now, we'll use a simple check for demonstration purposes
+  if (token !== 'admin-secret-token') {
+    return res.status(403).json({ error: 'Invalid token.' });
+  }
+  
+  next();
+};
+
+// Admin API routes
+// Get all bookings
+app.get('/api/admin/bookings', authenticateAdmin, (req, res) => {
+  const query = `
+    SELECT b.id, c.name as customer_name, b.service, b.date, b.time, b.status, b.created_at
+    FROM bookings b
+    JOIN customers c ON b.customer_id = c.id
+    ORDER BY b.created_at DESC
+  `;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching bookings:', err);
+      res.status(500).json({ error: 'Failed to fetch bookings' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Update booking status
+app.put('/api/admin/bookings/:id', authenticateAdmin, (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  
+  const query = 'UPDATE bookings SET status = ? WHERE id = ?';
+  db.query(query, [status, id], (err, results) => {
+    if (err) {
+      console.error('Error updating booking:', err);
+      res.status(500).json({ error: 'Failed to update booking' });
+    } else {
+      res.json({ message: 'Booking updated successfully' });
+    }
+  });
+});
+
+// Delete booking
+app.delete('/api/admin/bookings/:id', authenticateAdmin, (req, res) => {
+  const { id } = req.params;
+  
+  const query = 'DELETE FROM bookings WHERE id = ?';
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error deleting booking:', err);
+      res.status(500).json({ error: 'Failed to delete booking' });
+    } else {
+      res.json({ message: 'Booking deleted successfully' });
+    }
+  });
+});
+
+// Get all services
+app.get('/api/admin/services', authenticateAdmin, (req, res) => {
+  const query = 'SELECT * FROM services ORDER BY created_at DESC';
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching services:', err);
+      res.status(500).json({ error: 'Failed to fetch services' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Create service
+app.post('/api/admin/services', authenticateAdmin, (req, res) => {
+  const { name, description, price } = req.body;
+  
+  const query = 'INSERT INTO services (name, description, price) VALUES (?, ?, ?)';
+  db.query(query, [name, description, price], (err, results) => {
+    if (err) {
+      console.error('Error creating service:', err);
+      res.status(500).json({ error: 'Failed to create service' });
+    } else {
+      res.status(201).json({ id: results.insertId, message: 'Service created successfully' });
+    }
+  });
+});
+
+// Update service
+app.put('/api/admin/services/:id', authenticateAdmin, (req, res) => {
+  const { id } = req.params;
+  const { name, description, price } = req.body;
+  
+  const query = 'UPDATE services SET name = ?, description = ?, price = ? WHERE id = ?';
+  db.query(query, [name, description, price, id], (err, results) => {
+    if (err) {
+      console.error('Error updating service:', err);
+      res.status(500).json({ error: 'Failed to update service' });
+    } else {
+      res.json({ message: 'Service updated successfully' });
+    }
+  });
+});
+
+// Delete service
+app.delete('/api/admin/services/:id', authenticateAdmin, (req, res) => {
+  const { id } = req.params;
+  
+  const query = 'DELETE FROM services WHERE id = ?';
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error deleting service:', err);
+      res.status(500).json({ error: 'Failed to delete service' });
+    } else {
+      res.json({ message: 'Service deleted successfully' });
+    }
+  });
+});
+
 // Catch-all route - serve React app for client-side routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
