@@ -444,23 +444,78 @@ export function BookingManagement() {
             >
               <div className="inline-block align-bottom bg-white dark:bg-brynas-dark-2 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <div>
-                  <div className="mt-3 text-center sm:mt-5">
-                    <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                  <div className="mt-3 sm:mt-5">
+                    <Dialog.Title as="h3" className="mb-4 uppercase text-lg leading-6 font-medium text-gray-900 dark:text-white">
                       {t('bookingDetails')}
                     </Dialog.Title>
                     <div className="mt-2">
                       {selectedBooking && (
                         <div className="text-sm text-gray-500 dark:text-brynas-muted">
-                          <p><strong>{t('bookingId')}:</strong> {selectedBooking.id}</p>
-                          <p><strong>{t('customer')}:</strong> {selectedBooking.customer_name}</p>
-                          <p><strong>{t('email')}:</strong> {selectedBooking.customer_email || t('notAvailable')}</p>
-                          <p><strong>{t('phone')}:</strong> {selectedBooking.customer_phone || t('notAvailable')}</p>
-                          <p><strong>{t('service')}:</strong> {selectedBooking.service_name || t('notAvailable')}</p>
-                          <p><strong>{t('date')}:</strong> {format(new Date(selectedBooking.date), 'EEEE, dd/MM', { locale: sv })}</p>
-                          <p><strong>{t('time')}:</strong> {selectedBooking.time}</p>
-                          <p><strong>{t('status')}:</strong> {t(`statusBadge.${selectedBooking.status}`)}</p>
-                          <p><strong>{t('createdAt')}:</strong> {format(new Date(selectedBooking.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</p>
-                        </div>
+
+
+
+                          <div className='mb-4 flex'>
+                            <div className="mb-4 w-1/2">
+                              <div className="uppercase text-gray-500">{t('bookingId')}</div>
+                              <div className="text-white">{selectedBooking.id}</div>
+                            </div>
+                            <div className="mb-4 w-1/2">
+                              <div className="uppercase text-gray-500">{t('createdAt')}</div>
+                              <div className="text-white">{format(new Date(selectedBooking.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</div>
+                            </div>
+                          </div>
+
+
+
+                          <div className='mb-4 flex'>
+                          <div className="mb-4 w-1/2">
+                            <div className="uppercase text-gray-500">{t('customer')}</div>
+                            <div className="text-white">{selectedBooking.customer_name}</div>
+                          </div>
+                          <div className="mb-4 w-1/2">
+                            <div className="uppercase text-gray-500">{t('phone')}</div>
+                            <div className="text-white">{selectedBooking.customer_phone || t('notAvailable')}</div>
+                          </div>
+                          </div>
+
+
+
+                          <div className="mb-4">
+                            <div className="uppercase text-gray-500">{t('email')}</div>
+                            <div className="text-white">{selectedBooking.customer_email || t('notAvailable')}</div>
+                          </div>
+
+
+
+                          <div className='mb-4 flex'>
+                            <div className="mb-4 w-1/2">
+                              <div className="uppercase text-gray-500">{t('service')}</div>
+                              <div className="text-white">{selectedBooking.service_name || t('notAvailable')}</div>
+                            </div>
+                            <div className="mb-4 w-1/2">
+                              <div className="uppercase text-gray-500">{t('status')}</div>
+                              <div className="text-white">{t(`statusBadge.${selectedBooking.status}`)}</div>
+                            </div>
+                          </div>
+
+
+
+                          <div className='mb-4 flex'>
+                            <div className="mb-4 w-1/2">
+                              <div className="uppercase text-gray-500">{t('date')}</div>
+                              <div className="text-white">{format(new Date(selectedBooking.date), 'EEEE, dd/MM', { locale: sv })}</div>
+                            </div>
+                            <div className="mb-4 w-1/2">
+                              <div className="uppercase text-gray-500">{t('time')}</div>
+                              <div className="text-white">{selectedBooking.time}</div>
+                            </div>
+                          </div>                          
+                          </div>                          
+
+
+
+
+
                       )}
                     </div>
                   </div>
