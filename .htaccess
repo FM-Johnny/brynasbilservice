@@ -1,18 +1,8 @@
 RewriteEngine On
-RewriteBase /brynasbilservice/
 
-# Serve existing files directly (assets symlink, public/ files)
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -l
+# Serve existing files directly
+RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# Rewrite to public/ if file exists there
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{DOCUMENT_ROOT}/brynasbilservice/public/$1 -f
-RewriteRule ^(.+)$ public/$1 [L]
-
 # SPA fallback
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ public/index.html [L]
+RewriteRule ^ public/index.html [L]
