@@ -9,6 +9,11 @@ import { ProtectedRoute } from './components/admin/ProtectedRoute.tsx'
 
 const basename = process.env.NODE_ENV === 'development' ? '/' : '/brynasbilservice'
 
+// Default to dark theme unless the user has explicitly opted into light.
+if (localStorage.getItem('theme') !== 'light') {
+  document.documentElement.classList.add('dark')
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter basename={basename}>

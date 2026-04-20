@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 interface Booking {
   id: number
@@ -204,24 +205,24 @@ export function BookingManagement() {
   }
 
   return (
-    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div className="booking-management bg-white dark:bg-brynas-dark-2 shadow overflow-hidden sm:rounded-lg transition-colors">
       <div className="px-4 py-5 sm:px-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
           {t('bookingManagement')}
         </h3>
-        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+        <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-brynas-muted">
           {t('viewManageBookings')}
         </p>
       </div>
       
       {/* Search and Filter Controls */}
-      <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 sm:px-6">
+      <div className="px-4 py-3 bg-gray-50 dark:bg-brynas-dark-3 border-t border-gray-200 dark:border-brynas-dark-3 sm:px-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex-1">
             <div className="relative rounded-md shadow-sm">
               <input
                 type="text"
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 rounded-md text-black"
+                className="p-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark dark:text-white rounded-md text-black"
                 placeholder={t('searchBookings')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -245,7 +246,7 @@ export function BookingManagement() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md text-black"
+              className="block w-full p-4 text-base border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md text-black"
             >
               <option value="all">{t('allStatuses')}</option>
               <option value="pending">{t('pending')}</option>
@@ -272,9 +273,9 @@ export function BookingManagement() {
         </div>
       )}
       
-      <div className="border-t border-gray-200">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="border-t border-gray-200 dark:border-brynas-dark-3">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-brynas-dark-3">
+          <thead className="bg-gray-50 dark:bg-brynas-dark-3">
             <tr>
               <th
                 scope="col"
@@ -321,10 +322,10 @@ export function BookingManagement() {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white dark:bg-brynas-dark-2 divide-y divide-gray-200 dark:divide-brynas-dark-3">
             {sortedBookings.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-brynas-muted">
                   {t('noBookingsFound')}
                 </td>
               </tr>
@@ -344,25 +345,25 @@ export function BookingManagement() {
                 const formattedTime = booking.time ? format(new Date(`1970-01-01T${booking.time}`), 'HH:mm', { locale: sv }) : t('invalidTime');
 
                 return (
-                  <tr key={booking.id} onClick={() => openModal({ ...booking, customer_email: customer?.email, customer_phone: customer?.phone })} className="cursor-pointer hover:bg-gray-100">
+                  <tr key={booking.id} onClick={() => openModal({ ...booking, customer_email: customer?.email, customer_phone: customer?.phone })} className="cursor-pointer hover:bg-gray-100 dark:hover:bg-brynas-dark-3">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{booking.customer_name}</div>
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">{booking.customer_name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{booking.service_name}</div>
+                      <div className="text-sm text-gray-900 dark:text-gray-200">{booking.service_name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{formattedDate || t('invalidDate')}</div>
+                      <div className="text-sm text-gray-900 dark:text-gray-200">{formattedDate || t('invalidDate')}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{formattedTime || t('invalidTime')}</div>
+                      <div className="text-sm text-gray-500 dark:text-brynas-muted">{formattedTime || t('invalidTime')}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <select
                         value={booking.status}
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => updateBookingStatus(booking.id, e.target.value as Booking['status'])}
-                        className="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-gray-900 bg-white"
+                        className="p-4 text-sm rounded-md border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-gray-900 dark:text-white bg-white"
                       >
                         <option value="pending">{t('pending')}</option>
                         <option value="confirmed">{t('confirmed')}</option>
@@ -370,16 +371,25 @@ export function BookingManagement() {
                         <option value="cancelled">{t('cancelled')}</option>
                       </select>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="flex gap-2 px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          deleteBooking(booking.id);
+                          openModal(booking);
                         }}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-yellow-500 hover:text-yellow-700 ml-4"
                       >
-                        {t('delete')}
+                        <PencilIcon className="h-5 w-5" />
                       </button>
+                      <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteBooking(booking.id);
+                      }}
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
                     </td>
                   </tr>
                 )
@@ -418,15 +428,15 @@ export function BookingManagement() {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div className="inline-block align-bottom bg-white dark:bg-brynas-dark-2 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <div>
                   <div className="mt-3 text-center sm:mt-5">
-                    <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                    <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                       {t('bookingDetails')}
                     </Dialog.Title>
                     <div className="mt-2">
                       {selectedBooking && (
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-brynas-muted">
                           <p><strong>{t('bookingId')}:</strong> {selectedBooking.id}</p>
                           <p><strong>{t('customer')}:</strong> {selectedBooking.customer_name}</p>
                           <p><strong>{t('email')}:</strong> {selectedBooking.customer_email || t('notAvailable')}</p>
@@ -444,7 +454,7 @@ export function BookingManagement() {
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 dark:bg-brynas-gold dark:text-brynas-black text-base font-medium text-white hover:bg-indigo-700 dark:hover:bg-brynas-gold-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={closeModal}
                   >
                     {t('close')}

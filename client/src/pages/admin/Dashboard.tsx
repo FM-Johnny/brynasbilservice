@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BookingManagement } from '../../components/admin/BookingManagement'
 import { ServiceManagement } from '../../components/admin/ServiceManagement'
 import { useLanguage } from '../../context/useLanguage'
+import ThemeSwitcher from '../../components/ThemeSwitcher'
 
 export default function AdminDashboard() {
   const { t, language, setLanguage } = useLanguage()
@@ -14,9 +15,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="admin-shell min-h-screen bg-gray-100 dark:bg-brynas-black transition-colors">
       {/* Navigation */}
-      <nav className="bg-indigo-600 text-white">
+      <nav className="admin-nav bg-indigo-600 dark:bg-brynas-black dark:border-b-2 dark:border-brynas-red text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
@@ -29,8 +30,8 @@ export default function AdminDashboard() {
                     onClick={() => setActiveTab('bookings')}
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       activeTab === 'bookings'
-                        ? 'bg-indigo-700 text-white'
-                        : 'text-indigo-200 hover:text-white'
+                        ? 'bg-indigo-700 text-white dark:bg-brynas-red'
+                        : 'text-indigo-200 hover:text-white dark:text-brynas-muted dark:hover:text-white'
                     }`}
                   >
                     {t('bookings')}
@@ -39,8 +40,8 @@ export default function AdminDashboard() {
                     onClick={() => setActiveTab('services')}
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       activeTab === 'services'
-                        ? 'bg-indigo-700 text-white'
-                        : 'text-indigo-200 hover:text-white'
+                        ? 'bg-indigo-700 text-white dark:bg-brynas-red'
+                        : 'text-indigo-200 hover:text-white dark:text-brynas-muted dark:hover:text-white'
                     }`}
                   >
                     {t('services')}
@@ -50,10 +51,11 @@ export default function AdminDashboard() {
             </div>
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6">
+                <ThemeSwitcher />
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as 'sv' | 'en')}
-                  className="mr-4 px-3 py-2 text-sm font-medium text-black bg-transparent border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                  className="mr-4 px-3 py-2 text-sm font-medium text-white bg-transparent border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
                 >
                   <option value="sv">SV</option>
                   <option value="en">EN</option>

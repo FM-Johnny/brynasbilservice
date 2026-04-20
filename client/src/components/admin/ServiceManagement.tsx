@@ -6,6 +6,7 @@ import { sv } from 'date-fns/locale';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { DialogBackdrop, DialogTitle } from '@headlessui/react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 interface Service {
   id: number
@@ -164,20 +165,20 @@ export function ServiceManagement() {
   }
 
   return (
-    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div className="service-management bg-white dark:bg-brynas-dark-2 shadow overflow-hidden sm:rounded-lg transition-colors">
       <div className="px-4 py-5 sm:px-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
               {t('serviceManagement')}
             </h3>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+            <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-brynas-muted">
               {t('manageServices')}
             </p>
           </div>
           <button
             onClick={handleAddNew}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-brynas-gold dark:text-brynas-black dark:hover:bg-brynas-gold-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {t('addNewService')}
           </button>
@@ -188,7 +189,7 @@ export function ServiceManagement() {
           <div className="relative rounded-md shadow-sm">
             <input
               type="text"
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 rounded-md"
+              className="p-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark dark:text-white rounded-md"
               placeholder={t('searchServices')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -225,10 +226,10 @@ export function ServiceManagement() {
       )}
       
       {isEditing ? (
-        <div className="px-4 py-5 sm:p-6 border-t border-gray-200">
+        <div className="px-4 py-5 sm:p-6 border-t border-gray-200 dark:border-brynas-dark-3">
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             <div className="sm:col-span-3">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('serviceName')}
               </label>
               <div className="mt-1">
@@ -238,13 +239,13 @@ export function ServiceManagement() {
                   id="name"
                   value={currentService?.name || ''}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md text-black"
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark dark:text-white rounded-md text-black"
                 />
               </div>
             </div>
 
             <div className="sm:col-span-3">
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('price')}
               </label>
               <div className="mt-1">
@@ -254,13 +255,13 @@ export function ServiceManagement() {
                   id="price"
                   value={currentService?.price || ''}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md text-black"
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark dark:text-white rounded-md text-black"
                 />
               </div>
             </div>
 
             <div className="sm:col-span-6">
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('description')}
               </label>
               <div className="mt-1">
@@ -270,7 +271,7 @@ export function ServiceManagement() {
                   rows={3}
                   value={currentService?.description || ''}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md text-black"
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark dark:text-white rounded-md text-black"
                 />
               </div>
             </div>
@@ -280,23 +281,23 @@ export function ServiceManagement() {
             <button
               type="button"
               onClick={handleCancel}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-brynas-dark-3 text-sm font-medium rounded-md shadow-sm text-gray-700 dark:text-gray-200 bg-white dark:bg-brynas-dark hover:bg-gray-50 dark:hover:bg-brynas-dark-3 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               {t('cancel')}
             </button>
             <button
               type="button"
               onClick={handleSave}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-brynas-gold dark:text-brynas-black dark:hover:bg-brynas-gold-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               {t('save')}
             </button>
           </div>
         </div>
       ) : (
-        <div className="border-t border-gray-200">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="border-t border-gray-200 dark:border-brynas-dark-3">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-brynas-dark-3">
+            <thead className="bg-gray-50 dark:bg-brynas-dark-3">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t('service')}
@@ -312,35 +313,36 @@ export function ServiceManagement() {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-brynas-dark-2 divide-y divide-gray-200 dark:divide-brynas-dark-3">
               {filteredServices.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-brynas-muted">
                     {t('noServicesFound')}
                   </td>
                 </tr>
               ) : (
                 filteredServices.map((service) => {
                   return (
-                    <tr key={service.id} onClick={() => openModal(service)} className="cursor-pointer hover:bg-gray-100">
+                    <tr key={service.id} onClick={() => openModal(service)} className="cursor-pointer hover:bg-gray-100 dark:hover:bg-brynas-dark-3">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{service.name}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{service.name}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900 max-w-xs truncate">{service.description}</div>
+                        <div className="text-sm text-gray-900 dark:text-gray-200 max-w-xs truncate">{service.description}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{service.price} SEK</div>
+                        <div className="text-sm text-gray-900 dark:text-gray-200">{service.price} SEK</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="flex gap-2 px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleEdit(service);
                           }}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
+                          className="text-indigo-600 hover:text-indigo-900 dark:text-brynas-gold dark:hover:text-brynas-gold-light mr-4"
+                          title={t('editService')}
                         >
-                          {t('edit')}
+                          <PencilIcon className="h-5 w-5" />
                         </button>
                         <button
                           onClick={(e) => {
@@ -348,8 +350,9 @@ export function ServiceManagement() {
                             handleDelete(service.id);
                           }}
                           className="text-red-600 hover:text-red-900"
+                          title={t('deleteService')}
                         >
-                          {t('delete')}
+                          <TrashIcon className="h-5 w-5" />
                         </button>
                       </td>
                     </tr>
@@ -390,15 +393,15 @@ export function ServiceManagement() {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div className="inline-block align-bottom bg-white dark:bg-brynas-dark-2 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <div>
                   <div className="mt-3 text-center sm:mt-5">
-                    <DialogTitle as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                    <DialogTitle as="h3" className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                       {t('serviceDetails')}
                     </DialogTitle>
                     <div className="mt-2">
                       {selectedService && (
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-brynas-muted">
                           <p><strong>{t('serviceName')}:</strong> {selectedService.name}</p>
                           <p><strong>{t('description')}:</strong> {selectedService.description}</p>
                           <p><strong>{t('price')}:</strong> {selectedService.price} SEK</p>
@@ -411,7 +414,7 @@ export function ServiceManagement() {
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 dark:bg-brynas-gold dark:text-brynas-black text-base font-medium text-white hover:bg-indigo-700 dark:hover:bg-brynas-gold-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={closeModal}
                   >
                     {t('close')}
