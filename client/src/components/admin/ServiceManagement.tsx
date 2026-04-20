@@ -12,7 +12,8 @@ interface Service {
   id: number
   name: string
   description: string
-  price: number
+  price_starting: number | null
+  price_hourly: number
   created_at: string
 }
 
@@ -135,7 +136,7 @@ export function ServiceManagement() {
     const { name, value } = e.target
     setCurrentService({
       ...currentService,
-      [name]: name === 'price' ? parseFloat(value) : value
+      [name]: (name === 'price_hourly' || name === 'price_starting') ? (value === '' ? null : parseFloat(value)) : value
     })
   }
 
@@ -144,7 +145,8 @@ export function ServiceManagement() {
       id: 0,
       name: '',
       description: '',
-      price: 0,
+      price_starting: null,
+      price_hourly: 0,
       created_at: new Date().toISOString()
     })
     setIsEditing(true)
@@ -245,15 +247,31 @@ export function ServiceManagement() {
             </div>
 
             <div className="sm:col-span-3">
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('price')}
+              <label htmlFor="price_starting" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('priceStarting')}
               </label>
               <div className="mt-1">
                 <input
                   type="number"
-                  name="price"
-                  id="price"
-                  value={currentService?.price || ''}
+                  name="price_starting"
+                  id="price_starting"
+                  value={currentService?.price_starting ?? ''}
+                  onChange={handleChange}
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark dark:text-white rounded-md text-black"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="price_hourly" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('priceHourly')}
+              </label>
+              <div className="mt-1">
+                <input
+                  type="number"
+                  name="price_hourly"
+                  id="price_hourly"
+                  value={currentService?.price_hourly || ''}
                   onChange={handleChange}
                   className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark dark:text-white rounded-md text-black"
                 />
@@ -305,8 +323,11 @@ export function ServiceManagement() {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t('description')}
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('price')}
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {t('priceStarting')}
+                </th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {t('priceHourly')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t('actions')}
@@ -316,7 +337,7 @@ export function ServiceManagement() {
             <tbody className="bg-white dark:bg-brynas-dark-2 divide-y divide-gray-200 dark:divide-brynas-dark-3">
               {filteredServices.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-brynas-muted">
+                  <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-brynas-muted">
                     {t('noServicesFound')}
                   </td>
                 </tr>
@@ -330,10 +351,14 @@ export function ServiceManagement() {
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-900 dark:text-gray-200 max-w-xs truncate">{service.description}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-gray-200">{service.price} SEK</div>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <div className="text-sm text-gray-900 dark:text-gray-200">{service.price_starting != null ? `${service.price_starting}` : '—'}</div>
                       </td>
-                      <td className="flex gap-2 px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <div className="text-sm text-gray-900 dark:text-gray-200">{service.price_hourly}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center gap-2">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -354,6 +379,7 @@ export function ServiceManagement() {
                         >
                           <TrashIcon className="h-5 w-5" />
                         </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -404,7 +430,8 @@ export function ServiceManagement() {
                         <div className="text-sm text-gray-500 dark:text-brynas-muted">
                           <p><strong>{t('serviceName')}:</strong> {selectedService.name}</p>
                           <p><strong>{t('description')}:</strong> {selectedService.description}</p>
-                          <p><strong>{t('price')}:</strong> {selectedService.price} SEK</p>
+                          <p><strong>{t('priceStarting')}:</strong> {selectedService.price_starting != null ? `${selectedService.price_starting} SEK` : '—'}</p>
+                          <p><strong>{t('priceHourly')}:</strong> {selectedService.price_hourly} SEK</p>
                           <p><strong>{t('createdAt')}:</strong> {format(new Date(selectedService.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</p>
                         </div>
                       )}

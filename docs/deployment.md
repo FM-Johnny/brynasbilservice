@@ -4,7 +4,7 @@
 
 The production environment uses a layered request stack:
 
-```
+```bash
 Client browser
   → Cloudflare (SSL termination, CDN)
     → nginx (reverse proxy, port 80)
@@ -40,7 +40,7 @@ RewriteRule ^ public/index.html [L]                         # SPA fallback
 ## Server constraints
 
 | Constraint | Detail |
-|---|---|
+| ---------- | ------ |
 | OS | CentOS 7 (glibc 2.17) |
 | Node.js runtime | **v16 only** — v18+ requires glibc 2.28 which is unavailable |
 | Node.js build | v20 (runs on GitHub Actions Ubuntu runner, not on the server) |
@@ -49,7 +49,7 @@ RewriteRule ^ public/index.html [L]                         # SPA fallback
 
 ## Deploy directory layout
 
-```
+```bash
 $DEPLOY_PATH/
 ├── .env                 # DB credentials + PORT=3001 (preserved across deploys)
 ├── .htaccess            # Apache rewrite rules (deployed from repo)
@@ -89,7 +89,7 @@ Triggered on push to `main` or via `workflow_dispatch`.
 ### GitHub Secrets
 
 | Secret | Description |
-|---|---|
+| ------ | ----------- |
 | `DEPLOY_SSH_KEY` | Private SSH key for server access |
 | `DEPLOY_HOST` | Server IP (`194.14.207.224`) |
 | `DEPLOY_PORT` | SSH port (default `22`) |
@@ -101,7 +101,7 @@ Triggered on push to `main` or via `workflow_dispatch`.
 The `.env` file is **not** in the repo. It lives only on the server and is
 preserved across deploys via the backup/restore step. Contents:
 
-```
+```bash
 DB_HOST=localhost
 DB_USER=fenrirm_brynasbilservice
 DB_PASSWORD=<secret>

@@ -13,7 +13,7 @@ npm run dev    # uses nodemon, restarts on file changes
 
 Create a `.env` file in `server/`:
 
-```
+```bash
 DB_HOST=localhost
 DB_USER=fenrirm_brynasbilservice
 DB_PASSWORD=<your-password>

@@ -2,12 +2,12 @@
 
 Website and booking system for Brynäs Bilservice — a local car repair shop in Gävle, Sweden.
 
-**Live:** https://labb.fenrirmedia.se/brynasbilservice/
+**Live:** <https://labb.fenrirmedia.se/brynasbilservice/>
 
 ## Tech Stack
 
 | Layer | Technology |
-|---|---|
+| ------ | ----------- |
 | Frontend | React 18, TypeScript, Tailwind CSS 3, Vite 4 |
 | Backend | Node.js 16 (server), Express 4, JavaScript |
 | Database | MySQL / MariaDB |
@@ -17,7 +17,7 @@ Website and booking system for Brynäs Bilservice — a local car repair shop in
 
 ## Monorepo Structure
 
-```
+```bash
 brynasbilservice/
 ├── client/              # React frontend (Vite)
 │   ├── src/
@@ -90,7 +90,7 @@ cd client && npm run build    # outputs to client/dist/
 ## Database
 
 | Field | Value |
-|---|---|
+| ------ | ----------- |
 | Host | `localhost` (via SSH tunnel) |
 | Port | `3306` |
 | Database | `fenrirm_brynasbilservice` |
@@ -105,6 +105,7 @@ Automated via GitHub Actions on push to `main`. See [docs/deployment.md](docs/de
 for the full architecture, directory layout, and manual operations.
 
 Key points:
+
 - Client is built with Node 20 on GitHub Actions, deployed to `$DEPLOY_PATH/public/`
 - Server runs with Node 16 on the VPS (CentOS 7, glibc too old for Node 18+)
 - Express listens on port **3001** (not 3000 — that port is occupied)

@@ -134,7 +134,7 @@ const authenticateAdmin = (req, res, next) => {
 // Get all bookings
 app.get('/api/admin/bookings', authenticateAdmin, (req, res) => {
   const query = `
-    SELECT b.id, c.name as customer_name, s.name as service_name, s.price as service_price, b.date, b.time, b.status, b.created_at
+    SELECT b.id, c.name as customer_name, s.name as service_name, s.price_hourly as service_price, s.price_starting as service_price_starting, b.date, b.time, b.status, b.created_at
     FROM bookings b
     JOIN customers c ON b.customer_id = c.id
     JOIN services s ON b.service = s.id
@@ -198,10 +198,10 @@ app.get('/api/admin/services', authenticateAdmin, (req, res) => {
 
 // Create service
 app.post('/api/admin/services', authenticateAdmin, (req, res) => {
-  const { name, description, price } = req.body;
+  const { name, description, price_starting, price_hourly } = req.body;
   
-  const query = 'INSERT INTO services (name, description, price) VALUES (?, ?, ?)';
-  db.query(query, [name, description, price], (err, results) => {
+  const query = 'INSERT INTO services (name, description, price_starting, price_hourly) VALUES (?, ?, ?, ?)';
+  db.query(query, [name, description, price_starting || null, price_hourly], (err, results) => {
     if (err) {
       console.error('Error creating service:', err);
       res.status(500).json({ error: 'Failed to create service' });
@@ -214,10 +214,10 @@ app.post('/api/admin/services', authenticateAdmin, (req, res) => {
 // Update service
 app.put('/api/admin/services/:id', authenticateAdmin, (req, res) => {
   const { id } = req.params;
-  const { name, description, price } = req.body;
+  const { name, description, price_starting, price_hourly } = req.body;
   
-  const query = 'UPDATE services SET name = ?, description = ?, price = ? WHERE id = ?';
-  db.query(query, [name, description, price, id], (err, results) => {
+  const query = 'UPDATE services SET name = ?, description = ?, price_starting = ?, price_hourly = ? WHERE id = ?';
+  db.query(query, [name, description, price_starting || null, price_hourly, id], (err, results) => {
     if (err) {
       console.error('Error updating service:', err);
       res.status(500).json({ error: 'Failed to update service' });
