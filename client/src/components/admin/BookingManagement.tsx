@@ -319,8 +319,11 @@ export function BookingManagement() {
                   console.error('Error parsing date or time:', error)
                 }
 
-                // Fix invalid time value error by parsing time correctly
-                const formattedTime = booking.time ? format(new Date(`1970-01-01T${booking.time}`), 'HH:mm', { locale: sv }) : t('invalidTime');
+                // Validate and format time value
+                const isValidTime = (time: string) => /^\d{2}:\d{2}(:\d{2})?$/.test(time);
+                const formattedTime = booking.time && isValidTime(booking.time) 
+                  ? format(new Date(`1970-01-01T${booking.time}`), 'HH:mm', { locale: sv }) 
+                  : t('invalidTime');
 
                 return (
                   <tr key={booking.id} onClick={() => openModal(booking)} className="cursor-pointer hover:bg-gray-100 dark:hover:bg-brynas-dark-3">
@@ -430,11 +433,11 @@ export function BookingManagement() {
                           <div className='mb-4 flex'>
                             <div className="mb-4 w-1/2 pr-6">
                               <div className="uppercase text-gray-500">{t('bookingId')}</div>
-                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.id}</div>
+                              <div className="p-2 rounded-md dark:text-white hover:bg-slate-200 dark:hover:bg-gray-800">{selectedBooking.id}</div>
                             </div>
                             <div className="mb-4 w-1/2 pr-2">
                               <div className="uppercase text-gray-500">{t('createdAt')}</div>
-                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{format(new Date(selectedBooking.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</div>
+                              <div className="p-2 rounded-md dark:text-white hover:bg-slate-200 dark:hover:bg-gray-800">{format(new Date(selectedBooking.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</div>
                             </div>
                           </div>
 
@@ -443,11 +446,11 @@ export function BookingManagement() {
                           <div className='mb-4 flex'>
                           <div className="mb-4 w-1/2 pr-6">
                             <div className="uppercase text-gray-500">{t('customer')}</div>
-                            <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.customer_name}</div>
+                            <div className="p-2 rounded-md dark:text-white hover:bg-slate-200 dark:hover:bg-gray-800">{selectedBooking.customer_name}</div>
                           </div>
                           <div className="mb-4 w-1/2 pr-2">
                             <div className="uppercase text-gray-500">{t('phone')}</div>
-                            <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.customer_phone || t('notAvailable')}</div>
+                            <div className="p-2 rounded-md dark:text-white hover:bg-slate-200 dark:hover:bg-gray-800">{selectedBooking.customer_phone || t('notAvailable')}</div>
                           </div>
                           </div>
 
@@ -455,7 +458,7 @@ export function BookingManagement() {
 
                           <div className="mb-4 pr-2">
                             <div className="uppercase text-gray-500">{t('email')}</div>
-                            <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.customer_email ? <a href={`mailto:${selectedBooking.customer_email}`} className="text-brynas-gold hover:text-brynas-gold-light underline">{selectedBooking.customer_email}</a> : t('notAvailable')}</div>
+                            <div className="p-2 rounded-md dark:text-white hover:bg-slate-200 dark:hover:bg-gray-800">{selectedBooking.customer_email ? <a href={`mailto:${selectedBooking.customer_email}`} className="text-brynas-gold hover:text-brynas-gold-light underline">{selectedBooking.customer_email}</a> : t('notAvailable')}</div>
                           </div>
 
 
@@ -463,7 +466,7 @@ export function BookingManagement() {
                           <div className='mb-4 flex'>
                             <div className="mb-4 w-1/2 pr-6">
                               <div className="uppercase text-gray-500">{t('service')}</div>
-                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.service_name || t('notAvailable')}</div>
+                              <div className="p-2 rounded-md dark:text-white hover:bg-slate-200 dark:hover:bg-gray-800">{selectedBooking.service_name || t('notAvailable')}</div>
                             </div>
                             <div className="mb-4 w-1/2 pr-2">
                               <div className="uppercase text-gray-500">{t('status')}</div>
@@ -496,11 +499,11 @@ export function BookingManagement() {
                           <div className='mb-4 flex'>
                             <div className="mb-4 w-1/2 pr-6">
                               <div className="uppercase text-gray-500">{t('date')}</div>
-                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{format(new Date(selectedBooking.date), 'EEEE, dd/MM', { locale: sv })}</div>
+                              <div className="p-2 rounded-md dark:text-white hover:bg-slate-200 dark:hover:bg-gray-800">{format(new Date(selectedBooking.date), 'EEEE, dd/MM', { locale: sv })}</div>
                             </div>
                             <div className="mb-4 w-1/2 pr-2">
                               <div className="uppercase text-gray-500">{t('time')}</div>
-                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.time}</div>
+                              <div className="p-2 rounded-md dark:text-white hover:bg-slate-200 dark:hover:bg-gray-800">{selectedBooking.time}</div>
                             </div>
                           </div>                          
                           </div>                          
