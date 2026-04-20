@@ -45,7 +45,7 @@ npm run build
 The database is hosted on the remote server. To connect locally, set up an SSH tunnel:
 
 ```bash
-ssh -i ~/.ssh/id_ed25519 -L 3306:localhost:3306 -N -f fenrirm@194.14.207.224
+ssh -i ~/.ssh/fenrirm -L 3306:localhost:3306 -N -f fenrirm@194.14.207.224
 ```
 
 This forwards your local port `3306` to the remote MySQL server. Once active, you can connect to the database at `127.0.0.1:3306`.
@@ -72,7 +72,7 @@ Deployment is automated via GitHub Actions on every push to `main`.
 
 | Secret           | Description                                      |
 | ---------------- | ------------------------------------------------ |
-| `DEPLOY_SSH_KEY` | Private SSH key (ed25519) for server access      |
+| `DEPLOY_SSH_KEY` | Private SSH key (`fenrirm`) for server access    |
 | `DEPLOY_HOST`    | Server IP address                                |
 | `DEPLOY_PORT`    | SSH port (default: 22)                           |
 | `DEPLOY_USER`    | SSH username                                     |
