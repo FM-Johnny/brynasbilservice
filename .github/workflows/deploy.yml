@@ -99,5 +99,5 @@ jobs:
           # Restore .env backup
           ssh deploy-target "if [ -f /tmp/.env.brynas.bak ]; then cp /tmp/.env.brynas.bak \"$DEPLOY_PATH/.env\" && rm /tmp/.env.brynas.bak; fi"
 
-          # Install production deps and restart PM2
-          ssh deploy-target "export FNM_PATH=\"\$HOME/.local/share/fnm\" && export PATH=\"\$FNM_PATH:\$PATH\" && eval \"\$(fnm env --shell bash)\" && fnm use 20 && cd \"$DEPLOY_PATH\" && npm install --production && (pm2 restart brynasbilservice 2>/dev/null || pm2 start index.js --name brynasbilservice)"
+          # Install production deps and restart PM2 (server OS requires Node 16 — glibc too old for 20+)
+          ssh deploy-target "export FNM_PATH=\"\$HOME/.local/share/fnm\" && export PATH=\"\$FNM_PATH:\$PATH\" && eval \"\$(fnm env --shell bash)\" && fnm use 16 && cd \"$DEPLOY_PATH\" && npm install --production && (pm2 restart brynasbilservice 2>/dev/null || pm2 start index.js --name brynasbilservice)"
