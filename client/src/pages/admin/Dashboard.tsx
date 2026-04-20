@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import { BookingManagement } from '../../components/admin/BookingManagement'
 import { ServiceManagement } from '../../components/admin/ServiceManagement'
 import { useLanguage } from '../../context/useLanguage'
@@ -7,23 +6,11 @@ import { useLanguage } from '../../context/useLanguage'
 export default function AdminDashboard() {
   const { t, language, setLanguage } = useLanguage()
   const [activeTab, setActiveTab] = useState<'bookings' | 'services'>('bookings')
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    // Check if user is logged in
-    const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn')
-    const adminToken = localStorage.getItem('adminToken')
-    
-    if (!isAdminLoggedIn || !adminToken) {
-      navigate('/admin/login')
-    }
-  }, [navigate])
 
   const handleLogout = () => {
-    // Clear authentication tokens
     localStorage.removeItem('isAdminLoggedIn')
     localStorage.removeItem('adminToken')
-    navigate('/admin/login')
+    window.location.reload()
   }
 
   return (
