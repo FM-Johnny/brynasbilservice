@@ -2,101 +2,117 @@
 
 Website and booking system for Brynäs Bilservice — a local car repair shop in Gävle, Sweden.
 
+**Live:** https://labb.fenrirmedia.se/brynasbilservice/
+
 ## Tech Stack
 
-- **Frontend**: React, TypeScript, Tailwind CSS, Vite
-- **Database**: MySQL/MariaDB
-- **Deployment**: GitHub Actions (SSH + tar over SSH)
-- **Hosting**: VPS at 194.14.207.224
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, TypeScript, Tailwind CSS 3, Vite 4 |
+| Backend | Node.js 16 (server), Express 4, JavaScript |
+| Database | MySQL / MariaDB |
+| Deployment | GitHub Actions → SSH + tar → VPS |
+| Process manager | PM2 (via fnm) |
+| Hosting | VPS at `194.14.207.224` behind Cloudflare |
+
+## Monorepo Structure
+
+```
+brynasbilservice/
+├── client/              # React frontend (Vite)
+│   ├── src/
+│   │   ├── api/         # Axios config
+│   │   ├── components/
+│   │   │   ├── admin/   # Admin components (BookingManagement, ServiceManagement, ProtectedRoute)
+│   │   │   ├── icons/   # SVG icon components
+│   │   │   ├── layout/  # Header, Footer
+│   │   │   ├── sections/# Page sections (Hero, Services, About, etc.)
+│   │   │   └── ui/      # Reusable UI (Button, SectionHeader)
+│   │   ├── context/     # React context (LanguageContext)
+│   │   ├── css/         # Stylesheets
+│   │   ├── pages/
+│   │   │   └── admin/   # Dashboard page
+│   │   ├── translations/# sv.ts, en.ts
+│   │   ├── App.tsx
+│   │   └── main.tsx     # Router setup
+│   ├── vite.config.ts   # base: '/brynasbilservice/'
+│   └── package.json
+├── server/              # Express API (JavaScript, not TypeScript)
+│   ├── index.js         # All routes and middleware
+│   ├── database/        # Schema SQL
+│   └── package.json
+├── docs/                # Documentation
+│   ├── admin-panel.md
+│   ├── deployment.md
+│   └── ssh-setup.md
+├── .htaccess            # Apache rewrite rules (deployed to server)
+├── .github/
+│   ├── copilot-instructions.md
+│   └── workflows/
+│       └── deploy.yml
+└── README.md
+```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 20+ (for local development)
 - npm
+- SSH key `~/.ssh/fenrirm` for server/database access
 
-### Install & Run
+### Local Development
 
 ```bash
+# Start DB tunnel (if working with real data)
+ssh -i ~/.ssh/fenrirm -L 3306:localhost:3306 -N -f fenrirm@194.14.207.224
+
+# Terminal 1 — backend
+cd server
 npm install
-npm run dev
+npm run dev            # runs on localhost:3000
+
+# Terminal 2 — frontend
+cd client
+npm install
+npm run dev            # runs on localhost:5173
 ```
+
+The frontend dev server at `http://localhost:5173/brynasbilservice/` proxies API
+calls to `http://localhost:3000` via the axios config.
 
 ### Build
 
 ```bash
-npm run build
+cd client && npm run build    # outputs to client/dist/
 ```
 
 ## Database
 
-### Connection Details
+| Field | Value |
+|---|---|
+| Host | `localhost` (via SSH tunnel) |
+| Port | `3306` |
+| Database | `fenrirm_brynasbilservice` |
+| Username | `fenrirm_brynasbilservice` |
 
-| Field    | Value                        |
-| -------- | ---------------------------- |
-| Host     | localhost (via SSH tunnel)   |
-| Port     | 3306                         |
-| Database | fenrirm_brynasbilservice     |
-| Username | fenrirm_brynasbilservice     |
-
-### SSH Tunnel (for local development)
-
-The database is hosted on the remote server. To connect locally, set up an SSH tunnel:
-
-```bash
-ssh -i ~/.ssh/fenrirm -L 3306:localhost:3306 -N -f fenrirm@194.14.207.224
-```
-
-This forwards your local port `3306` to the remote MySQL server. Once active, you can connect to the database at `127.0.0.1:3306`.
-
-### Schema
-
-The database schema is defined in [`database/schema.sql`](database/schema.sql). It includes:
-
-- **customers** — Customer details (name, email, phone)
-- **bookings** — Booking records linked to customers (service, date, time, status)
-- **services** — Available services with descriptions and pricing
-
-To apply the schema on the server:
-
-```bash
-mysql -u fenrirm_brynasbilservice -p fenrirm_brynasbilservice < database/schema.sql
-```
+Schema is defined in [`server/database/schema.sql`](server/database/schema.sql).
+Tables: **customers**, **bookings**, **services**.
 
 ## Deployment
 
-Deployment is automated via GitHub Actions on every push to `main`.
+Automated via GitHub Actions on push to `main`. See [docs/deployment.md](docs/deployment.md)
+for the full architecture, directory layout, and manual operations.
 
-### GitHub Secrets Required
+Key points:
+- Client is built with Node 20 on GitHub Actions, deployed to `$DEPLOY_PATH/public/`
+- Server runs with Node 16 on the VPS (CentOS 7, glibc too old for Node 18+)
+- Express listens on port **3001** (not 3000 — that port is occupied)
+- Apache `.htaccess` proxies `/api/` to Express and serves the SPA fallback
+- `.env` is preserved across deploys via backup/restore
 
-| Secret           | Description                                      |
-| ---------------- | ------------------------------------------------ |
-| `DEPLOY_SSH_KEY` | Private SSH key (`fenrirm`) for server access    |
-| `DEPLOY_HOST`    | Server IP address                                |
-| `DEPLOY_PORT`    | SSH port (default: 22)                           |
-| `DEPLOY_USER`    | SSH username                                     |
-| `DEPLOY_PATH`    | Absolute path to the web root on the server      |
+## Documentation
 
-### Manual Deploy Trigger
-
-You can also trigger a deploy manually from the GitHub Actions tab using `workflow_dispatch`.
-
-## Project Structure
-
-```bash
-src/
-├── assets/          # Images and static assets
-├── components/
-│   ├── icons/       # Reusable SVG icon components
-│   ├── layout/      # Header, Footer
-│   ├── sections/    # Page sections (Hero, Services, About, etc.)
-│   └── ui/          # Reusable UI components (Button, SectionHeader)
-├── css/             # Stylesheets
-└── App.tsx          # Main app component
-database/
-└── schema.sql       # Database schema
-.github/
-└── workflows/
-    └── deploy.yml   # CI/CD pipeline
-```
+- [Admin Panel](docs/admin-panel.md) — features, auth flow, API endpoints
+- [Deployment](docs/deployment.md) — architecture, GitHub Actions, server ops
+- [SSH Setup](docs/ssh-setup.md) — key generation and server access
