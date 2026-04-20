@@ -7,9 +7,11 @@ import App from './App.tsx'
 import AdminDashboard from './pages/admin/Dashboard.tsx'
 import { ProtectedRoute } from './components/admin/ProtectedRoute.tsx'
 
+const basename = process.env.NODE_ENV === 'development' ? '/' : '/brynasbilservice'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter basename="/brynasbilservice">
+    <BrowserRouter basename={basename}>
       <LanguageProvider>
         <Routes>
           <Route path="/" element={<App />} />
