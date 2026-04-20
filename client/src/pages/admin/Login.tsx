@@ -19,7 +19,7 @@ export default function AdminLogin() {
         // Store admin token in localStorage
         localStorage.setItem('adminToken', 'admin-secret-token')
         localStorage.setItem('isAdminLoggedIn', 'true')
-        navigate('/admin/dashboard')
+        navigate('/admin')
       } else {
         setError('Invalid username or password')
       }
