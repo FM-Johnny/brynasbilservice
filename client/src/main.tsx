@@ -10,7 +10,7 @@ import { ProtectedRoute } from './components/admin/ProtectedRoute.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/brynasbilservice">
       <LanguageProvider>
         <Routes>
           <Route path="/" element={<App />} />

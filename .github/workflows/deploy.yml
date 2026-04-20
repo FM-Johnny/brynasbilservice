@@ -76,21 +76,28 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           set -e
-          # Clean and prepare deployment directory
+
+          # Backup .env if it exists (contains DB credentials)
+          ssh deploy-target "if [ -f \"$DEPLOY_PATH/.env\" ]; then cp \"$DEPLOY_PATH/.env\" /tmp/.env.brynas.bak; fi"
+
+          # Clean deploy directory
           ssh deploy-target "mkdir -p \"$DEPLOY_PATH\" && find \"$DEPLOY_PATH\" -mindepth 1 -maxdepth 1 -exec rm -rf {} +"
-          
+
           # Deploy server files
           tar -C server -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH\""
-          
-          # Deploy client build (dist folder) to public directory on server
+
+          # Deploy client build to public/
           ssh deploy-target "mkdir -p \"$DEPLOY_PATH/public\""
           tar -C client/dist -czf - . | ssh deploy-target "tar -xzf - -C \"$DEPLOY_PATH/public\""
-          
+
+          # Deploy .htaccess from repo root
+          scp .htaccess deploy-target:"$DEPLOY_PATH/.htaccess"
+
           # Copy index.html to root for directory index
           ssh deploy-target "cp \"$DEPLOY_PATH/public/index.html\" \"$DEPLOY_PATH/index.html\""
-          
-          # Create symlink for assets folder
-          ssh deploy-target "cd \"$DEPLOY_PATH\" && ln -sf public/assets assets"
-          
-          # Restart server (load fnm and use Node 16, then run npm and pm2)
-          ssh deploy-target "export FNM_PATH=\"\$HOME/.local/share/fnm\" && export PATH=\"\$FNM_PATH:\$PATH\" && eval \"\$(fnm env --shell bash)\" && fnm use 16 && cd \"$DEPLOY_PATH\" && npm install --production && (pm2 restart brynasbilservice 2>/dev/null || pm2 start index.js --name brynasbilservice)"
+
+          # Restore .env backup
+          ssh deploy-target "if [ -f /tmp/.env.brynas.bak ]; then cp /tmp/.env.brynas.bak \"$DEPLOY_PATH/.env\" && rm /tmp/.env.brynas.bak; fi"
+
+          # Install production deps and restart PM2
+          ssh deploy-target "export FNM_PATH=\"\$HOME/.local/share/fnm\" && export PATH=\"\$FNM_PATH:\$PATH\" && eval \"\$(fnm env --shell bash)\" && fnm use 20 && cd \"$DEPLOY_PATH\" && npm install --production && (pm2 restart brynasbilservice 2>/dev/null || pm2 start index.js --name brynasbilservice)"

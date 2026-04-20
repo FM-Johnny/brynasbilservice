@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000', // Update this to match your backend URL
+  baseURL: import.meta.env.DEV ? 'http://localhost:3000' : '/brynasbilservice',
 });
 
 export default axiosInstance;
