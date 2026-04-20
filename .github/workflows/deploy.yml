@@ -96,6 +96,9 @@ jobs:
           # Copy index.html to root for directory index
           ssh deploy-target "cp \"$DEPLOY_PATH/public/index.html\" \"$DEPLOY_PATH/index.html\""
 
+          # Create symlink for assets so /brynasbilservice/assets/ resolves
+          ssh deploy-target "cd \"$DEPLOY_PATH\" && ln -sf public/assets assets"
+
           # Restore .env backup
           ssh deploy-target "if [ -f /tmp/.env.brynas.bak ]; then cp /tmp/.env.brynas.bak \"$DEPLOY_PATH/.env\" && rm /tmp/.env.brynas.bak; fi"
 
