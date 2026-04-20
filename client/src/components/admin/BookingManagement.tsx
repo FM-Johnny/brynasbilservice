@@ -21,14 +21,6 @@ interface Booking {
   customer_phone?: string
 }
 
-interface Customer {
-  id: number
-  name: string
-  email: string
-  phone: string
-  created_at: string
-}
-
 export function BookingManagement() {
   const { t } = useLanguage()
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -38,7 +30,6 @@ export function BookingManagement() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
-  const [customers, setCustomers] = useState<Customer[]>([]);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -64,24 +55,7 @@ export function BookingManagement() {
     fetchBookings()
   }, [])
 
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const token = localStorage.getItem('adminToken');
-        const response = await axiosInstance.get('/api/admin/customers', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setCustomers(response.data);
-      } catch (error) {
-        setError('Failed to fetch customers');
-        console.error(error);
-      }
-    };
 
-    fetchCustomers();
-  }, []);
 
   // Initialize sortConfig with default sorting on 'date' and 'time'
   const [sortConfig, setSortConfig] = useState<{ key: keyof Booking; direction: 'asc' | 'desc' } | null>({
@@ -336,8 +310,7 @@ export function BookingManagement() {
               </tr>
             ) : (
               sortedBookings.map((booking) => {
-                let formattedDate = ''
-                const customer = customers.find((c) => c.id === booking.customer_id);
+                let formattedDate = '';
 
                 try {
                   const parsedDate = new Date(booking.date)
@@ -350,7 +323,7 @@ export function BookingManagement() {
                 const formattedTime = booking.time ? format(new Date(`1970-01-01T${booking.time}`), 'HH:mm', { locale: sv }) : t('invalidTime');
 
                 return (
-                  <tr key={booking.id} onClick={() => openModal({ ...booking, customer_email: customer?.email, customer_phone: customer?.phone })} className="cursor-pointer hover:bg-gray-100 dark:hover:bg-brynas-dark-3">
+                  <tr key={booking.id} onClick={() => openModal(booking)} className="cursor-pointer hover:bg-gray-100 dark:hover:bg-brynas-dark-3">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900 dark:text-white">{booking.customer_name}</div>
                     </td>
@@ -455,59 +428,79 @@ export function BookingManagement() {
 
 
                           <div className='mb-4 flex'>
-                            <div className="mb-4 w-1/2">
+                            <div className="mb-4 w-1/2 pr-6">
                               <div className="uppercase text-gray-500">{t('bookingId')}</div>
-                              <div className="text-white">{selectedBooking.id}</div>
+                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.id}</div>
                             </div>
-                            <div className="mb-4 w-1/2">
+                            <div className="mb-4 w-1/2 pr-2">
                               <div className="uppercase text-gray-500">{t('createdAt')}</div>
-                              <div className="text-white">{format(new Date(selectedBooking.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</div>
+                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{format(new Date(selectedBooking.created_at), 'EEEE, dd/MM HH:mm', { locale: sv })}</div>
                             </div>
                           </div>
 
 
 
                           <div className='mb-4 flex'>
-                          <div className="mb-4 w-1/2">
+                          <div className="mb-4 w-1/2 pr-6">
                             <div className="uppercase text-gray-500">{t('customer')}</div>
-                            <div className="text-white">{selectedBooking.customer_name}</div>
+                            <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.customer_name}</div>
                           </div>
-                          <div className="mb-4 w-1/2">
+                          <div className="mb-4 w-1/2 pr-2">
                             <div className="uppercase text-gray-500">{t('phone')}</div>
-                            <div className="text-white">{selectedBooking.customer_phone || t('notAvailable')}</div>
+                            <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.customer_phone || t('notAvailable')}</div>
                           </div>
                           </div>
 
 
 
-                          <div className="mb-4">
+                          <div className="mb-4 pr-2">
                             <div className="uppercase text-gray-500">{t('email')}</div>
-                            <div className="text-white">{selectedBooking.customer_email || t('notAvailable')}</div>
+                            <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.customer_email ? <a href={`mailto:${selectedBooking.customer_email}`} className="text-brynas-gold hover:text-brynas-gold-light underline">{selectedBooking.customer_email}</a> : t('notAvailable')}</div>
                           </div>
 
 
 
                           <div className='mb-4 flex'>
-                            <div className="mb-4 w-1/2">
+                            <div className="mb-4 w-1/2 pr-6">
                               <div className="uppercase text-gray-500">{t('service')}</div>
-                              <div className="text-white">{selectedBooking.service_name || t('notAvailable')}</div>
+                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.service_name || t('notAvailable')}</div>
                             </div>
-                            <div className="mb-4 w-1/2">
+                            <div className="mb-4 w-1/2 pr-2">
                               <div className="uppercase text-gray-500">{t('status')}</div>
-                              <div className="text-white">{t(`statusBadge.${selectedBooking.status}`)}</div>
+                              <div className="relative inline-block mt-1">
+                                <select
+                                  value={selectedBooking.status}
+                                  onChange={(e) => {
+                                    const newStatus = e.target.value as Booking['status'];
+                                    updateBookingStatus(selectedBooking.id, newStatus);
+                                    setSelectedBooking({ ...selectedBooking, status: newStatus });
+                                  }}
+                                  className="appearance-none pl-4 py-2 pr-10 text-sm rounded-md border-gray-300 dark:border-brynas-dark-3 dark:bg-brynas-dark shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-gray-900 dark:text-white bg-white"
+                                >
+                                  <option value="pending">{t('pending')}</option>
+                                  <option value="confirmed">{t('confirmed')}</option>
+                                  <option value="completed">{t('completed')}</option>
+                                  <option value="cancelled">{t('cancelled')}</option>
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                  <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </div>
+                              </div>
                             </div>
                           </div>
 
 
 
                           <div className='mb-4 flex'>
-                            <div className="mb-4 w-1/2">
+                            <div className="mb-4 w-1/2 pr-6">
                               <div className="uppercase text-gray-500">{t('date')}</div>
-                              <div className="text-white">{format(new Date(selectedBooking.date), 'EEEE, dd/MM', { locale: sv })}</div>
+                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{format(new Date(selectedBooking.date), 'EEEE, dd/MM', { locale: sv })}</div>
                             </div>
-                            <div className="mb-4 w-1/2">
+                            <div className="mb-4 w-1/2 pr-2">
                               <div className="uppercase text-gray-500">{t('time')}</div>
-                              <div className="text-white">{selectedBooking.time}</div>
+                              <div className="p-2 rounded-md text-white hover:bg-gray-800">{selectedBooking.time}</div>
                             </div>
                           </div>                          
                           </div>                          

@@ -40,7 +40,7 @@ export const sv = {
   searchBookings: 'Sök efter kund eller tjänst...',
   bookingDetails: 'Bokningsdetaljer',
   bookingId: 'Boknings-ID',
-  createdAt: 'Skapad',
+  createdAt: 'Bokning skapad',
   email: 'E-post',
   phone: 'Telefon',
   date: 'Datum',

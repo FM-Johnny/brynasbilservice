@@ -134,7 +134,7 @@ const authenticateAdmin = (req, res, next) => {
 // Get all bookings
 app.get('/api/admin/bookings', authenticateAdmin, (req, res) => {
   const query = `
-    SELECT b.id, c.name as customer_name, s.name as service_name, s.price_hourly as service_price, s.price_starting as service_price_starting, b.date, b.time, b.status, b.created_at
+    SELECT b.id, c.name as customer_name, c.email as customer_email, c.phone as customer_phone, s.name as service_name, s.price_hourly as service_price, s.price_starting as service_price_starting, b.date, b.time, b.status, b.created_at
     FROM bookings b
     JOIN customers c ON b.customer_id = c.id
     JOIN services s ON b.service = s.id
