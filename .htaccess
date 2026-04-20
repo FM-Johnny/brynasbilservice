@@ -1,0 +1,19 @@
+RewriteEngine On
+RewriteBase /labb/brynasbilservice/
+
+# Proxy API requests to Node.js
+RewriteRule ^api/(.*)$ http://localhost:3000/api/$1 [P,L]
+
+# Serve assets from assets symlink
+RewriteRule ^assets/(.*)$ assets/$1 [L]
+
+# Serve files from public/ if they exist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/labb/brynasbilservice/public/$1 -f
+RewriteRule ^(.+)$ public/$1 [L]
+
+# SPA fallback - serve index.html for all other routes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/index.html [L]
